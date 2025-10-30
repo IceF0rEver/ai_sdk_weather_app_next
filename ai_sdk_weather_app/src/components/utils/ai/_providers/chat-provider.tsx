@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 import { createContext, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
@@ -50,7 +51,9 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 	const [webSearch, setWebSearch] = useState<boolean>(false);
 
 	const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-	const [currentBranchId, setCurrentBranchId] = useState<string>(() => uuidv4());
+	const [currentBranchId, setCurrentBranchId] = useState<string>(() =>
+		uuidv4(),
+	);
 
 	const {
 		messages,
@@ -63,7 +66,15 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 		setMessages,
 		addToolResult,
 		resumeStream,
-	} = useChat<MyUIMessage>({ generateId: () => uuidv4() });
+	} = useChat<MyUIMessage>({
+		generateId: () => uuidv4(),
+		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+		async onToolCall({ toolCall }) {
+			if (toolCall.dynamic) {
+				return;
+			}
+		},
+	});
 
 	return (
 		<ChatContext.Provider

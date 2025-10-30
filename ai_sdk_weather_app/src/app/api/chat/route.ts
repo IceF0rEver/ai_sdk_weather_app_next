@@ -3,6 +3,7 @@ import { mistral } from "@ai-sdk/mistral";
 import {
 	convertToModelMessages,
 	extractReasoningMiddleware,
+	stepCountIs,
 	streamText,
 	type UIDataTypes,
 	type UIMessage,
@@ -10,6 +11,7 @@ import {
 	wrapLanguageModel,
 } from "ai";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
+import { tools } from "@/lib/ai/tools";
 
 export const maxDuration = 30;
 
@@ -32,9 +34,12 @@ export async function POST(req: Request) {
 			}),
 		}),
 		messages: convertToModelMessages(messages),
-
+		tools,
 		system:
-			"You are a helpful assistant that can answer questions and help with tasks",
+			"You are a helpful assistant that can answer questions and help with tasks. " +
+			"You have access to tools for calculations, weather information, and database searches. " +
+			"Use them in priority when appropriate to provide accurate information.",
+		stopWhen: stepCountIs(5),
 	});
 
 	return result.toUIMessageStreamResponse({
