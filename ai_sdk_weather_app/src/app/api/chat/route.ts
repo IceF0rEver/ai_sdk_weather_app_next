@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 		}),
 		messages: convertToModelMessages(messages),
 		tools,
-		toolChoice: { type: "tool", toolName: "getWeather" },
+		toolChoice: "auto",
 		system:
 			"You are a helpful assistant that can answer questions and help with tasks. " +
 			"You have access to tools for calculations, weather information, and database searches. " +
@@ -50,8 +50,7 @@ export async function POST(req: Request) {
 				const lastUserMessage = [...messages]
 					.reverse()
 					.find((m) => m.role === "user");
-				const branchId =
-					lastUserMessage?.metadata?.branchId ?? crypto.randomUUID();
+				const branchId = lastUserMessage?.metadata?.branchId ?? randomUUID();
 				const parentMessageId = lastUserMessage?.id ?? null;
 				const createdAt = Date.now();
 
