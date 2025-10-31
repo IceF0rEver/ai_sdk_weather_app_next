@@ -3,6 +3,8 @@ import { mistral } from "@ai-sdk/mistral";
 import {
 	convertToModelMessages,
 	extractReasoningMiddleware,
+	InvalidToolInputError,
+	NoSuchToolError,
 	stepCountIs,
 	streamText,
 	type UIDataTypes,
@@ -35,11 +37,11 @@ export async function POST(req: Request) {
 		}),
 		messages: convertToModelMessages(messages),
 		tools,
+		toolChoice: { type: "tool", toolName: "getWeather" },
 		system:
 			"You are a helpful assistant that can answer questions and help with tasks. " +
 			"You have access to tools for calculations, weather information, and database searches. " +
 			"Use them in priority when appropriate to provide accurate information.",
-		stopWhen: stepCountIs(5),
 	});
 
 	return result.toUIMessageStreamResponse({
@@ -49,16 +51,28 @@ export async function POST(req: Request) {
 		originalMessages: messages,
 		messageMetadata: ({ part }) => {
 			if (part.type === "start") {
-				const lastMessage = messages[messages.length - 1];
-				const branchId = lastMessage.metadata?.branchId;
-				const parentMessageId = lastMessage.id;
-				const createdAt = lastMessage.metadata?.createdAt ?? Date.now();
+				const lastUserMessage = [...messages]
+					.reverse()
+					.find((m) => m.role === "user");
+				const branchId =
+					lastUserMessage?.metadata?.branchId ?? crypto.randomUUID();
+				const parentMessageId = lastUserMessage?.id ?? null;
+				const createdAt = Date.now();
 
 				return {
-					branchId: branchId!,
-					parentMessageId: parentMessageId,
-					createdAt: createdAt,
+					branchId,
+					parentMessageId,
+					createdAt,
 				};
+			}
+		},
+		onError: (error) => {
+			if (NoSuchToolError.isInstance(error)) {
+				return "The model tried to call a unknown tool.";
+			} else if (InvalidToolInputError.isInstance(error)) {
+				return "The model called a tool with invalid inputs.";
+			} else {
+				return "An unknown error occurred.";
 			}
 		},
 	});
