@@ -5,11 +5,7 @@ import {
 	extractReasoningMiddleware,
 	InvalidToolInputError,
 	NoSuchToolError,
-	stepCountIs,
 	streamText,
-	type UIDataTypes,
-	type UIMessage,
-	type UITools,
 	wrapLanguageModel,
 } from "ai";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
@@ -21,7 +17,7 @@ export async function POST(req: Request) {
 	const {
 		messages,
 		model,
-		webSearch,
+		// webSearch,
 	}: {
 		messages: MyUIMessage[];
 		model: string;
