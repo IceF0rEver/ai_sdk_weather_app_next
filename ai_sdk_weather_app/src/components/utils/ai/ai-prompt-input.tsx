@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { type UUIDTypes, v4 as uuidv4 } from "uuid";
 import {
 	PromptInput,
@@ -16,12 +15,11 @@ import {
 import { cn } from "@/lib/utils";
 import { useChatContext } from "./_providers/chat-provider";
 import type { MessageMetadata } from "./_types/types";
-import { ToolBarInputActionMenu, ToolBarInputButton, ToolBarInputModelSelect } from "./ai-toolbar";
-
-interface Model {
-	name: string;
-	value: string;
-}
+import {
+	ToolBarInputActionMenu,
+	ToolBarInputButton,
+	ToolBarInputModelSelect,
+} from "./ai-toolbar";
 
 interface PromptInputToolbarSectionProps {
 	disabledFile?: boolean;
@@ -31,7 +29,6 @@ interface PromptInputToolbarSectionProps {
 
 interface AiPromptInputProps extends PromptInputToolbarSectionProps {
 	className?: string;
-	models: Model[];
 }
 
 export function PromptInputBodySection() {
@@ -42,12 +39,17 @@ export function PromptInputBodySection() {
 				{(attachment) => <PromptInputAttachment data={attachment} />}
 			</PromptInputAttachments>
 
-			<PromptInputTextarea onChange={(e) => setInput(e.target.value)} value={input} />
+			<PromptInputTextarea
+				onChange={(e) => setInput(e.target.value)}
+				value={input}
+			/>
 		</PromptInputBody>
 	);
 }
 
-export function PromptInputToolbarSection({ ...props }: PromptInputToolbarSectionProps) {
+export function PromptInputToolbarSection({
+	...props
+}: PromptInputToolbarSectionProps) {
 	const { status, input } = useChatContext();
 	return (
 		<PromptInputToolbar>
@@ -78,7 +80,6 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 		setInput,
 		setCurrentBranchId,
 		setEditingMessageId,
-		setModels,
 	} = useChatContext();
 
 	const handleSubmit = (message: PromptInputMessage) => {
@@ -101,7 +102,6 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 			parentMessageId = lastMessage?.id ?? null;
 			branchId = currentBranchId;
 		}
-
 		sendMessage(
 			{
 				text: message.text || "Sent with attachments",
@@ -127,13 +127,15 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 		setEditingMessageId(null);
 	};
 
-	useEffect(() => {
-		setModels(props.models);
-	}, []);
-
 	return (
 		<PromptInput
-			onSubmit={status === "streaming" ? stop : status === "error" ? clearError : handleSubmit}
+			onSubmit={
+				status === "streaming"
+					? stop
+					: status === "error"
+						? clearError
+						: handleSubmit
+			}
 			className={cn("mt-4", `${props.className}`)}
 			globalDrop
 			multiple

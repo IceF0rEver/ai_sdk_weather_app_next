@@ -1,3 +1,4 @@
+import { ChatProvider } from "@/components/utils/ai/_providers/chat-provider";
 import AiChat from "@/components/utils/ai/ai-chat";
 
 export default async function Page() {
@@ -20,5 +21,9 @@ export default async function Page() {
 		},
 	];
 
-	return <AiChat models={models} />;
+	return (
+		<ChatProvider models={models}>
+			<AiChat />
+		</ChatProvider>
+	);
 }

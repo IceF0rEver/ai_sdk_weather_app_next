@@ -10,6 +10,10 @@ interface Model {
 	name: string;
 	value: string;
 }
+interface ChatProviderProps {
+	children: React.ReactNode;
+	models: Model[];
+}
 
 interface ChatContextValue {
 	messages: MyUIMessage[];
@@ -44,10 +48,10 @@ interface ChatContextValue {
 
 const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 
-export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
+export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 	const [input, setInput] = useState<string>("");
-	const [models, setModels] = useState<Model[]>([]);
-	const [model, setModel] = useState<string>(models[0]?.value);
+	const [models, setModels] = useState<Model[]>(props.models);
+	const [model, setModel] = useState<string>(props.models[0]?.value);
 	const [webSearch, setWebSearch] = useState<boolean>(false);
 
 	const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
@@ -103,7 +107,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 				setCurrentBranchId,
 			}}
 		>
-			{children}
+			{props.children}
 		</ChatContext.Provider>
 	);
 };
