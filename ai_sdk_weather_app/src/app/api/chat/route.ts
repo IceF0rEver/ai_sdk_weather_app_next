@@ -3,8 +3,6 @@ import { mistral } from "@ai-sdk/mistral";
 import {
 	convertToModelMessages,
 	extractReasoningMiddleware,
-	InvalidToolInputError,
-	NoSuchToolError,
 	streamText,
 	wrapLanguageModel,
 } from "ai";
@@ -59,15 +57,6 @@ export async function POST(req: Request) {
 					parentMessageId,
 					createdAt,
 				};
-			}
-		},
-		onError: (error) => {
-			if (NoSuchToolError.isInstance(error)) {
-				return "The model tried to call a unknown tool.";
-			} else if (InvalidToolInputError.isInstance(error)) {
-				return "The model called a tool with invalid inputs.";
-			} else {
-				return "An unknown error occurred.";
 			}
 		},
 	});
