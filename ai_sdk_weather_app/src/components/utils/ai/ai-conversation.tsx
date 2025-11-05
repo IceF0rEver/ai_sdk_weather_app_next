@@ -3,7 +3,11 @@
 import { AlertCircle, RefreshCcwIcon } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { Action, Actions } from "@/components/ai-elements/actions";
-import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
+import {
+	Conversation,
+	ConversationContent,
+	ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
 import { Loader } from "@/components/ai-elements/loader";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { usePromptInputController } from "@/components/ai-elements/prompt-input";
@@ -24,12 +28,19 @@ interface AiConversationErrorProps {
 }
 
 export function AiConversationError({ ...props }: AiConversationErrorProps) {
-	const { clearError, regenerate, error, messages } = useChatContext();
+	const { clearError, regenerate, error, messages, model, webSearch } =
+		useChatContext();
 
 	const handleRetry = useCallback(() => {
 		clearError();
-		regenerate({ messageId: props.message.id });
-	}, [regenerate, clearError, props.message.id]);
+		regenerate({
+			messageId: props.message.id,
+			body: {
+				model: model,
+				webSearch: webSearch,
+			},
+		});
+	}, [regenerate, clearError, props.message.id, model, webSearch]);
 	return (
 		props.message.id === messages.at(-1)?.id && (
 			<div className="grid gap-2">
@@ -88,7 +99,8 @@ export function AiConversationEditButton() {
 }
 
 export default function AiConversation({ ...props }: AiConversationProps) {
-	const { messages, error, status, editingMessageId, currentBranchId } = useChatContext();
+	const { messages, error, status, editingMessageId, currentBranchId } =
+		useChatContext();
 
 	const getMessagesForCurrentBranch = useCallback(() => {
 		const lastMessageInCurrentBranch = messages.findLast(
@@ -97,7 +109,9 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 
 		let currentMessageId = lastMessageInCurrentBranch?.id ?? null;
 
-		const messageByIdMap = new Map(messages.map((message) => [message.id, message]));
+		const messageByIdMap = new Map(
+			messages.map((message) => [message.id, message]),
+		);
 		const messagesInBranch: MyUIMessage[] = [];
 
 		while (currentMessageId) {
@@ -123,7 +137,11 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 				})}
 				{status === "submitted" && <Loader />}
 			</ConversationContent>
-			{editingMessageId ? <AiConversationEditButton /> : <ConversationScrollButton />}
+			{editingMessageId ? (
+				<AiConversationEditButton />
+			) : (
+				<ConversationScrollButton />
+			)}
 		</Conversation>
 	);
 }

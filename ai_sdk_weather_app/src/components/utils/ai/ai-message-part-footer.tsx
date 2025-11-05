@@ -4,7 +4,12 @@ import type { TextUIPart } from "ai";
 import { CopyIcon, EditIcon, RefreshCcwIcon, TrashIcon } from "lucide-react";
 import { useCallback } from "react";
 import { Action, Actions } from "@/components/ai-elements/actions";
-import { BranchNext, BranchPage, BranchPrevious, BranchSelector } from "@/components/ai-elements/branch";
+import {
+	BranchNext,
+	BranchPage,
+	BranchPrevious,
+	BranchSelector,
+} from "@/components/ai-elements/branch";
 import { usePromptInputController } from "@/components/ai-elements/prompt-input";
 import { cn } from "@/lib/utils";
 import { useChatContext } from "./_providers/chat-provider";
@@ -28,13 +33,29 @@ function base64URLtoFile(dataURL: string, filename: string): File {
 	return new File([array], filename, { type: mime });
 }
 
-export function AiMessageFooterPartAction({ ...props }: AiMessageFooterPartActionProps) {
-	const { regenerate, setEditingMessageId, setMessages, messages, setCurrentBranchId } = useChatContext();
+export function AiMessageFooterPartAction({
+	...props
+}: AiMessageFooterPartActionProps) {
+	const {
+		regenerate,
+		setEditingMessageId,
+		setMessages,
+		messages,
+		setCurrentBranchId,
+		model,
+		webSearch,
+	} = useChatContext();
 	const promptInputController = usePromptInputController();
 
 	const handleRetry = useCallback(() => {
-		regenerate({ messageId: props.message.id });
-	}, [regenerate, props.message.id]);
+		regenerate({
+			messageId: props.message.id,
+			body: {
+				model: model,
+				webSearch: webSearch,
+			},
+		});
+	}, [regenerate, props.message.id, model, webSearch]);
 
 	const handleCopy = useCallback((content: string) => {
 		navigator.clipboard.writeText(content);
@@ -44,7 +65,10 @@ export function AiMessageFooterPartAction({ ...props }: AiMessageFooterPartActio
 		(content: MyUIMessage) => {
 			promptInputController.attachments.clear();
 			const textParts = content.parts
-				.filter((part): part is { type: "text"; text: string } => part.type === "text")
+				.filter(
+					(part): part is { type: "text"; text: string } =>
+						part.type === "text",
+				)
 				.map((part) => part.text)
 				.join("\n");
 
@@ -59,7 +83,9 @@ export function AiMessageFooterPartAction({ ...props }: AiMessageFooterPartActio
 				} => part.type === "file",
 			);
 
-			const fileObjects = fileParts.map((part) => base64URLtoFile(part.url, part.filename));
+			const fileObjects = fileParts.map((part) =>
+				base64URLtoFile(part.url, part.filename),
+			);
 
 			promptInputController.textInput.setInput(textParts);
 			promptInputController.attachments.add(fileObjects);
@@ -76,7 +102,9 @@ export function AiMessageFooterPartAction({ ...props }: AiMessageFooterPartActio
 				if (!idsToDelete.includes(messageId)) {
 					idsToDelete.push(messageId);
 				}
-				const children = messages.filter((msg) => msg.metadata?.parentMessageId === messageId);
+				const children = messages.filter(
+					(msg) => msg.metadata?.parentMessageId === messageId,
+				);
 				children.forEach((child) => {
 					collectDescendants(child.id);
 				});
@@ -84,16 +112,21 @@ export function AiMessageFooterPartAction({ ...props }: AiMessageFooterPartActio
 
 			collectDescendants(content.id);
 
-			const updatedMessages = messages.filter((msg) => !idsToDelete.includes(msg.id));
+			const updatedMessages = messages.filter(
+				(msg) => !idsToDelete.includes(msg.id),
+			);
 
 			const allMessagesByBranch = [
 				...updatedMessages.filter(
 					(msg) =>
-						content.metadata?.parentMessageId === msg.metadata?.parentMessageId &&
+						content.metadata?.parentMessageId ===
+							msg.metadata?.parentMessageId &&
 						content.metadata?.branchId !== msg.metadata?.branchId,
 				),
 			]
-				.sort((a, b) => (a.metadata?.createdAt ?? 0) - (b.metadata?.createdAt ?? 0))
+				.sort(
+					(a, b) => (a.metadata?.createdAt ?? 0) - (b.metadata?.createdAt ?? 0),
+				)
 				.slice(-1);
 
 			if (allMessagesByBranch.length > 0 && allMessagesByBranch[0].metadata) {
@@ -132,7 +165,9 @@ export function AiMessageFooterPartAction({ ...props }: AiMessageFooterPartActio
 		},
 	];
 
-	const visibleActions = actions.filter((action) => action.visibleTo.includes(props.message.role));
+	const visibleActions = actions.filter((action) =>
+		action.visibleTo.includes(props.message.role),
+	);
 
 	return (
 		<Actions
