@@ -1,7 +1,10 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
+import {
+	DefaultChatTransport,
+	lastAssistantMessageIsCompleteWithToolCalls,
+} from "ai";
 import { createContext, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
@@ -73,9 +76,30 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 	} = useChat<MyUIMessage>({
 		generateId: () => uuidv4(),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+		transport: new DefaultChatTransport({
+			api: "/api/chat",
+			body: {
+				model: model,
+			},
+		}),
 		async onToolCall({ toolCall }) {
 			if (toolCall.dynamic) {
 				return;
+			}
+			switch (toolCall.toolName) {
+				case "getLocation": {
+					navigator.geolocation.getCurrentPosition((position) => {
+						addToolResult({
+							tool: "getLocation",
+							toolCallId: toolCall.toolCallId,
+							output: {
+								latitude: position.coords.latitude,
+								longitude: position.coords.longitude,
+							},
+						});
+					});
+					break;
+				}
 			}
 		},
 	});

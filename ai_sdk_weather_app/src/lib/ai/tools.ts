@@ -1,16 +1,16 @@
 import { tool } from "ai";
 import { z } from "zod";
 
-export const toolName = tool({
-	description: "",
-	inputSchema: z.object({
-		value: z.string(),
+const getLocation = tool({
+	description:
+		"Récupère la localisation de l'utilisateur via son navigateur (latitude, longitude)",
+	inputSchema: z.object({}),
+	outputSchema: z.object({
+		latitude: z.number(),
+		longitude: z.number(),
 	}),
-	execute: async ({ value }) => {
-		return value;
-	},
 });
 
 export const tools = {
-	toolName,
+	getLocation,
 };
