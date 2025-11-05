@@ -4,12 +4,10 @@ import {
 	convertToModelMessages,
 	extractReasoningMiddleware,
 	streamText,
-	type UIDataTypes,
-	type UIMessage,
-	type UITools,
 	wrapLanguageModel,
 } from "ai";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
+import { tools } from "@/lib/ai/tools";
 
 export const maxDuration = 30;
 
@@ -17,7 +15,7 @@ export async function POST(req: Request) {
 	const {
 		messages,
 		model,
-		webSearch,
+		// webSearch,
 	}: {
 		messages: MyUIMessage[];
 		model: string;
@@ -32,9 +30,12 @@ export async function POST(req: Request) {
 			}),
 		}),
 		messages: convertToModelMessages(messages),
-
+		tools,
+		toolChoice: "auto",
 		system:
-			"You are a helpful assistant that can answer questions and help with tasks",
+			"You are a helpful assistant that can answer questions and help with tasks. " +
+			"You have access to tools for calculations, weather information, and database searches. " +
+			"Use them in priority when appropriate to provide accurate information.",
 	});
 
 	return result.toUIMessageStreamResponse({
@@ -44,15 +45,17 @@ export async function POST(req: Request) {
 		originalMessages: messages,
 		messageMetadata: ({ part }) => {
 			if (part.type === "start") {
-				const lastMessage = messages[messages.length - 1];
-				const branchId = lastMessage.metadata?.branchId;
-				const parentMessageId = lastMessage.id;
-				const createdAt = lastMessage.metadata?.createdAt ?? Date.now();
+				const lastUserMessage = [...messages]
+					.reverse()
+					.find((m) => m.role === "user");
+				const branchId = lastUserMessage?.metadata?.branchId ?? randomUUID();
+				const parentMessageId = lastUserMessage?.id ?? null;
+				const createdAt = Date.now();
 
 				return {
-					branchId: branchId!,
-					parentMessageId: parentMessageId,
-					createdAt: createdAt,
+					branchId,
+					parentMessageId,
+					createdAt,
 				};
 			}
 		},

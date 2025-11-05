@@ -5,13 +5,12 @@ const prisma = new PrismaClient();
 async function main() {}
 
 main()
-	.then(() => {
+	.then(async () => {
 		console.log("✅ Seed completed.");
-	})
-	.catch((e) => {
-		console.error(e);
-		process.exit(1);
-	})
-	.finally(async () => {
 		await prisma.$disconnect();
+	})
+	.catch(async (e) => {
+		console.error(e);
+		await prisma.$disconnect();
+		process.exit(1);
 	});

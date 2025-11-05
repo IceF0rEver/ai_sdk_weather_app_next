@@ -1,5 +1,6 @@
-import type { UIMessage } from "ai";
+import type { InferUITools, UIDataTypes, UIMessage } from "ai";
 import { z } from "zod";
+import type { tools } from "@/lib/ai/tools";
 
 export const messageMetadataSchema = z.object({
 	branchId: z.string().uuid(),
@@ -9,4 +10,8 @@ export const messageMetadataSchema = z.object({
 
 export type MessageMetadata = z.infer<typeof messageMetadataSchema>;
 
-export type MyUIMessage = UIMessage<MessageMetadata>;
+export type MyUIMessage = UIMessage<
+	MessageMetadata,
+	UIDataTypes,
+	InferUITools<typeof tools>
+>;

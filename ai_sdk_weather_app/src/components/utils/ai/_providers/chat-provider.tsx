@@ -1,6 +1,10 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import {
+	DefaultChatTransport,
+	lastAssistantMessageIsCompleteWithToolCalls,
+} from "ai";
 import { createContext, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
@@ -8,6 +12,10 @@ import type { MyUIMessage } from "@/components/utils/ai/_types/types";
 interface Model {
 	name: string;
 	value: string;
+}
+interface ChatProviderProps {
+	children: React.ReactNode;
+	models: Model[];
 }
 
 interface ChatContextValue {
@@ -43,14 +51,16 @@ interface ChatContextValue {
 
 const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 
-export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
+export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 	const [input, setInput] = useState<string>("");
-	const [models, setModels] = useState<Model[]>([]);
-	const [model, setModel] = useState<string>(models[0]?.value);
+	const [models, setModels] = useState<Model[]>(props.models);
+	const [model, setModel] = useState<string>(props.models[0]?.value);
 	const [webSearch, setWebSearch] = useState<boolean>(false);
 
 	const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-	const [currentBranchId, setCurrentBranchId] = useState<string>(() => uuidv4());
+	const [currentBranchId, setCurrentBranchId] = useState<string>(() =>
+		uuidv4(),
+	);
 
 	const {
 		messages,
@@ -63,7 +73,36 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 		setMessages,
 		addToolResult,
 		resumeStream,
-	} = useChat<MyUIMessage>({ generateId: () => uuidv4() });
+	} = useChat<MyUIMessage>({
+		generateId: () => uuidv4(),
+		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+		transport: new DefaultChatTransport({
+			api: "/api/chat",
+			body: {
+				model: model,
+			},
+		}),
+		async onToolCall({ toolCall }) {
+			if (toolCall.dynamic) {
+				return;
+			}
+			switch (toolCall.toolName) {
+				case "getLocation": {
+					navigator.geolocation.getCurrentPosition((position) => {
+						addToolResult({
+							tool: "getLocation",
+							toolCallId: toolCall.toolCallId,
+							output: {
+								latitude: position.coords.latitude,
+								longitude: position.coords.longitude,
+							},
+						});
+					});
+					break;
+				}
+			}
+		},
+	});
 
 	return (
 		<ChatContext.Provider
@@ -92,7 +131,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 				setCurrentBranchId,
 			}}
 		>
-			{children}
+			{props.children}
 		</ChatContext.Provider>
 	);
 };
