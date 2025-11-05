@@ -28,19 +28,14 @@ interface AiConversationErrorProps {
 }
 
 export function AiConversationError({ ...props }: AiConversationErrorProps) {
-	const { clearError, regenerate, error, messages, model, webSearch } =
-		useChatContext();
+	const { clearError, regenerate, error, messages } = useChatContext();
 
 	const handleRetry = useCallback(() => {
 		clearError();
 		regenerate({
 			messageId: props.message.id,
-			body: {
-				model: model,
-				webSearch: webSearch,
-			},
 		});
-	}, [regenerate, clearError, props.message.id, model, webSearch]);
+	}, [regenerate, clearError, props.message.id]);
 	return (
 		props.message.id === messages.at(-1)?.id && (
 			<div className="grid gap-2">

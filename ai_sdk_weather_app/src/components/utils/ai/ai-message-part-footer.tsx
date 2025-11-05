@@ -42,20 +42,14 @@ export function AiMessageFooterPartAction({
 		setMessages,
 		messages,
 		setCurrentBranchId,
-		model,
-		webSearch,
 	} = useChatContext();
 	const promptInputController = usePromptInputController();
 
 	const handleRetry = useCallback(() => {
 		regenerate({
 			messageId: props.message.id,
-			body: {
-				model: model,
-				webSearch: webSearch,
-			},
 		});
-	}, [regenerate, props.message.id, model, webSearch]);
+	}, [regenerate, props.message.id]);
 
 	const handleCopy = useCallback((content: string) => {
 		navigator.clipboard.writeText(content);
