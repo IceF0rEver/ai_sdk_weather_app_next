@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/locales/client";
 import { useChatContext } from "./_providers/chat-provider";
 import type { MyUIMessage } from "./_types/types";
-import AiMessagePart from "./ai-message-part";
+import { AiMessage } from "./ai-message";
 
 interface AiConversationProps {
 	disabledAvatar?: boolean;
@@ -125,7 +125,7 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 				{getMessagesForCurrentBranch().map((message, i) => {
 					return (
 						<div key={`${message.id}-${i}`} className="py-0.5">
-							{message.parts && <AiMessagePart {...props} message={message} />}
+							{message.parts && <AiMessage {...props} message={message} />}
 							{error ? <AiConversationError message={message} /> : null}
 						</div>
 					);
