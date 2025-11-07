@@ -51,11 +51,12 @@ export function AiMessageFooterPartAction({
 	}, [regenerate, props.message.id]);
 
 	const handleCopy = useCallback((content: MyUIMessage) => {
-		const textPart = content.parts.find(
-			(part) => part.type === "text",
-		) as TextUIPart;
+		const textPart = content.parts
+			.filter((part) => part.type === "text")
+			.map((part) => (part as TextUIPart).text)
+			.join(" ");
 
-		navigator.clipboard.writeText(textPart.text);
+		navigator.clipboard.writeText(textPart);
 	}, []);
 
 	const handleEdit = useCallback(
