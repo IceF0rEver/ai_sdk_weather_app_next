@@ -70,7 +70,6 @@ export function AiMessage({ ...props }: AiMessageProps) {
 			setCurrentBranchId(allMessagesByBranch[index].metadata?.branchId);
 		}
 	};
-	console.log(messages);
 	return (
 		<Branch
 			defaultBranch={currentIndex >= 0 ? currentIndex : 0}
