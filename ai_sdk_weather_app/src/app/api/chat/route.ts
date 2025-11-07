@@ -35,7 +35,8 @@ export async function POST(req: Request) {
 		system:
 			"You are a helpful assistant that can answer questions and help with tasks. " +
 			"You have access to tools for calculations, weather information, and database searches. " +
-			"Use them in priority when appropriate to provide accurate information.",
+			"Use them in priority when appropriate to provide accurate information. " +
+			"If you use a tool, generate a concise sentence summarizing the data returned by the tool.",
 	});
 
 	return result.toUIMessageStreamResponse({

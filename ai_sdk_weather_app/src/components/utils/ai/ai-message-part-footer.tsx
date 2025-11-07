@@ -16,7 +16,6 @@ import { useChatContext } from "./_providers/chat-provider";
 import type { MyUIMessage } from "./_types/types";
 
 interface AiMessageFooterPartActionProps {
-	part: TextUIPart;
 	message: MyUIMessage;
 }
 
@@ -51,8 +50,13 @@ export function AiMessageFooterPartAction({
 		});
 	}, [regenerate, props.message.id]);
 
-	const handleCopy = useCallback((content: string) => {
-		navigator.clipboard.writeText(content);
+	const handleCopy = useCallback((content: MyUIMessage) => {
+		const textPart = content.parts
+			.filter((part) => part.type === "text")
+			.map((part) => (part as TextUIPart).text)
+			.join(" ");
+
+		navigator.clipboard.writeText(textPart);
 	}, []);
 
 	const handleEdit = useCallback(
@@ -142,7 +146,7 @@ export function AiMessageFooterPartAction({
 		{
 			icon: <CopyIcon />,
 			label: "Copy",
-			onClick: () => handleCopy(props.part.text),
+			onClick: () => handleCopy(props.message),
 			visibleTo: ["user", "assistant"],
 		},
 		{
