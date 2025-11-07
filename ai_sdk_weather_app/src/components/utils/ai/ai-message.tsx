@@ -88,7 +88,7 @@ export function AiMessage({ ...props }: AiMessageProps) {
 									<AiMessageHeaderPartSources {...props} />
 									<AiMessageHeaderPartFile {...props} />
 
-									<Message from={message.role} className="py-0 px-0.5">
+									<Message from={message.role} className="p-1 overflow-auto">
 										<MessageContent
 											variant={
 												message.id === editingMessageId
