@@ -48,7 +48,8 @@ export function AiMessageAvatar({ ...props }: AiMessageAvatarProps) {
 }
 
 export function AiMessage({ ...props }: AiMessageProps) {
-	const { setCurrentBranchId, editingMessageId, messages } = useChatContext();
+	const { setCurrentBranchId, editingMessageId, messages, status } =
+		useChatContext();
 
 	const allMessagesByBranch = [
 		props.message,
@@ -69,7 +70,7 @@ export function AiMessage({ ...props }: AiMessageProps) {
 			setCurrentBranchId(allMessagesByBranch[index].metadata?.branchId);
 		}
 	};
-
+	console.log(messages);
 	return (
 		<Branch
 			defaultBranch={currentIndex >= 0 ? currentIndex : 0}
@@ -80,25 +81,36 @@ export function AiMessage({ ...props }: AiMessageProps) {
 				{allMessagesByBranch.map((message, i) => {
 					return (
 						<div key={`${message.id}-${i}`} className="grid gap-2">
-							<AiMessageHeaderPartReasoning {...props} />
-							<AiMessageHeaderPartSources {...props} />
-							<AiMessageHeaderPartFile {...props} />
+							{message.parts.some((part) => part.type === "text") ||
+							status === "streaming" ||
+							status === "submitted" ? (
+								<>
+									<AiMessageHeaderPartReasoning {...props} />
+									<AiMessageHeaderPartSources {...props} />
+									<AiMessageHeaderPartFile {...props} />
 
-							<Message from={message.role} className="py-0 px-0.5">
-								<MessageContent
-									variant={
-										message.id === editingMessageId ? "editing" : "contained"
-									}
-								>
-									{message.parts.some((part) => part.type === "text") ? (
-										<AiMessageMainPart message={message} />
-									) : (
-										<Loader />
-									)}
-								</MessageContent>
-								<AiMessageAvatar {...props} />
-							</Message>
-							<AiMessageFooterPartAction {...props} />
+									<Message from={message.role} className="py-0 px-0.5">
+										<MessageContent
+											variant={
+												message.id === editingMessageId
+													? "editing"
+													: "contained"
+											}
+										>
+											{message.parts.some((part) => part.type === "text") ? (
+												<AiMessageMainPart message={message} />
+											) : (
+												(status === "streaming" || status === "submitted") && (
+													<Loader />
+												)
+											)}
+										</MessageContent>
+										<AiMessageAvatar {...props} />
+									</Message>
+
+									<AiMessageFooterPartAction {...props} />
+								</>
+							) : null}
 						</div>
 					);
 				})}
