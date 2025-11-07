@@ -8,7 +8,6 @@ import {
 	ConversationContent,
 	ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { Loader } from "@/components/ai-elements/loader";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { usePromptInputController } from "@/components/ai-elements/prompt-input";
 import { Button } from "@/components/ui/button";
@@ -94,7 +93,7 @@ export function AiConversationEditButton() {
 }
 
 export default function AiConversation({ ...props }: AiConversationProps) {
-	const { messages, error, status, editingMessageId, currentBranchId } =
+	const { messages, error, editingMessageId, currentBranchId } =
 		useChatContext();
 
 	const getMessagesForCurrentBranch = useCallback(() => {
@@ -130,7 +129,6 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 						</div>
 					);
 				})}
-				{status === "submitted" && <Loader />}
 			</ConversationContent>
 			{editingMessageId ? (
 				<AiConversationEditButton />

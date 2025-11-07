@@ -2,6 +2,7 @@
 
 import { BotMessageSquare } from "lucide-react";
 import { Branch, BranchMessages } from "@/components/ai-elements/branch";
+import { Loader } from "@/components/ai-elements/loader";
 import {
 	Message,
 	MessageAvatar,
@@ -82,13 +83,18 @@ export function AiMessage({ ...props }: AiMessageProps) {
 							<AiMessageHeaderPartReasoning {...props} />
 							<AiMessageHeaderPartSources {...props} />
 							<AiMessageHeaderPartFile {...props} />
+
 							<Message from={message.role} className="py-0 px-0.5">
 								<MessageContent
 									variant={
 										message.id === editingMessageId ? "editing" : "contained"
 									}
 								>
-									<AiMessageMainPart message={props.message} />
+									{message.parts.some((part) => part.type === "text") ? (
+										<AiMessageMainPart message={message} />
+									) : (
+										<Loader />
+									)}
 								</MessageContent>
 								<AiMessageAvatar {...props} />
 							</Message>
