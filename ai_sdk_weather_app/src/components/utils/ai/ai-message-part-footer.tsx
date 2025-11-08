@@ -127,8 +127,15 @@ export function AiMessageFooterPartAction({
 				)
 				.slice(-1);
 
-			if (allMessagesByBranch.length > 0 && allMessagesByBranch[0].metadata) {
+			if (
+				allMessagesByBranch.length > 0 &&
+				allMessagesByBranch[0].metadata?.branchId
+			) {
 				setCurrentBranchId(allMessagesByBranch[0].metadata?.branchId);
+			} else if (allMessagesByBranch.length === 0 && messages.length === 4) {
+				if (messages[0].metadata?.branchId) {
+					setCurrentBranchId(messages[0].metadata?.branchId);
+				}
 			}
 
 			setMessages(updatedMessages);
