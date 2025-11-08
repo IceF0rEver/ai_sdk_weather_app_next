@@ -118,6 +118,7 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 
 		return messagesInBranch.reverse();
 	}, [currentBranchId, messages]);
+	console.log(messages);
 	return (
 		<Conversation className={cn("h-full", `${props.className}`)}>
 			<ConversationContent>

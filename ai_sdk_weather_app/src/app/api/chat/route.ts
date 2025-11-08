@@ -21,6 +21,9 @@ export async function POST(req: Request) {
 		model: string;
 		webSearch: boolean;
 	} = await req.json();
+
+	const startTime = performance.now();
+
 	const result = streamText({
 		// model: webSearch ? "perplexity/sonar" : mistral(model),
 		model: wrapLanguageModel({
@@ -45,19 +48,27 @@ export async function POST(req: Request) {
 		sendReasoning: true,
 		originalMessages: messages,
 		messageMetadata: ({ part }) => {
-			if (part.type === "start") {
-				const lastUserMessage = [...messages]
-					.reverse()
-					.find((m) => m.role === "user");
-				const branchId = lastUserMessage?.metadata?.branchId ?? randomUUID();
-				const parentMessageId = lastUserMessage?.id ?? null;
-				const createdAt = Date.now();
+			switch (part.type) {
+				case "start": {
+					const lastUserMessage = [...messages]
+						.reverse()
+						.find((m) => m.role === "user");
+					const branchId = lastUserMessage?.metadata?.branchId ?? randomUUID();
+					const parentMessageId = lastUserMessage?.id ?? null;
+					const createdAt = Date.now();
 
-				return {
-					branchId,
-					parentMessageId,
-					createdAt,
-				};
+					return {
+						branchId,
+						parentMessageId,
+						createdAt,
+					};
+				}
+				case "reasoning-end": {
+					const reasoningDuration = Math.ceil(
+						(performance.now() - startTime) / 1000,
+					);
+					return { reasoningDuration };
+				}
 			}
 		},
 	});

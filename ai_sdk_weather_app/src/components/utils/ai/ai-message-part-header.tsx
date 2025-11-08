@@ -75,7 +75,8 @@ export function AiMessageHeaderPartReasoning({
 	return reasoningPart?.text ? (
 		<Reasoning
 			className={cn("w-full", status === "streaming" && "animate-pulse")}
-			isStreaming={status === "streaming"}
+			isStreaming={reasoningPart.state === "streaming"}
+			duration={props.message.metadata?.reasoningDuration}
 		>
 			<ReasoningTrigger />
 			<ReasoningContent>{reasoningPart.text}</ReasoningContent>
