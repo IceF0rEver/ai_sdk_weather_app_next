@@ -3,9 +3,10 @@ import { z } from "zod";
 import type { tools } from "@/lib/ai/tools";
 
 export const messageMetadataSchema = z.object({
-	branchId: z.string().uuid(),
-	parentMessageId: z.string().uuid().nullable(),
-	createdAt: z.number(),
+	branchId: z.string().uuid().optional(),
+	parentMessageId: z.string().uuid().nullable().optional(),
+	createdAt: z.number().optional(),
+	reasoningDuration: z.number().optional(),
 });
 
 export type MessageMetadata = z.infer<typeof messageMetadataSchema>;

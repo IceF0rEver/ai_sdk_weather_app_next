@@ -188,6 +188,11 @@
     },
     "appSideBar": {
       "chatBot": "Chat"
+    },
+    "ai": {
+      "input": {
+        "DefaultAttachmentText": "Envoyé avec pièces jointes"
+      }
     }
   },
   "zod": {
