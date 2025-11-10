@@ -188,6 +188,11 @@
     },
     "appSideBar": {
       "chatBot": "Chat bot"
+    },
+    "ai": {
+      "input": {
+        "DefaultAttachmentText": "Sent with attachments"
+      }
     }
   },
   "zod": {

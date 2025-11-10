@@ -41,6 +41,7 @@ export function AiMessageFooterPartAction({
 		setMessages,
 		messages,
 		setCurrentBranchId,
+		status,
 	} = useChatContext();
 	const promptInputController = usePromptInputController();
 
@@ -194,6 +195,7 @@ export function AiMessageFooterPartAction({
 						label={action.label}
 						aria-label={action.label}
 						title={action.label}
+						disabled={status !== "ready" && status !== "error"}
 					>
 						{action.icon}
 					</Action>

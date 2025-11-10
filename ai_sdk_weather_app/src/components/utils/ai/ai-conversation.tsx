@@ -11,6 +11,7 @@ import {
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { usePromptInputController } from "@/components/ai-elements/prompt-input";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/locales/client";
 import { useChatContext } from "./_providers/chat-provider";
@@ -35,6 +36,7 @@ export function AiConversationError({ ...props }: AiConversationErrorProps) {
 			messageId: props.message.id,
 		});
 	}, [regenerate, clearError, props.message.id]);
+
 	return (
 		props.message.id === messages.at(-1)?.id && (
 			<div className="grid gap-2">
@@ -87,7 +89,7 @@ export function AiConversationEditButton() {
 			variant="outline"
 		>
 			{t("button.cancelEdit")}
-			<kbd className="border px-1 rounded-sm">Esc</kbd>
+			<Kbd>Esc</Kbd>
 		</Button>
 	);
 }
@@ -118,7 +120,7 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 
 		return messagesInBranch.reverse();
 	}, [currentBranchId, messages]);
-	console.log(messages);
+
 	return (
 		<Conversation className={cn("h-full", `${props.className}`)}>
 			<ConversationContent>

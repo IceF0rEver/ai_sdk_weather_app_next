@@ -66,7 +66,7 @@ export function AiMessage({ ...props }: AiMessageProps) {
 	);
 
 	const handleBranchChange = (index: number) => {
-		if (allMessagesByBranch[index].metadata) {
+		if (allMessagesByBranch[index].metadata?.branchId) {
 			setCurrentBranchId(allMessagesByBranch[index].metadata?.branchId);
 		}
 	};

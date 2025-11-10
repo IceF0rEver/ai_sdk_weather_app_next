@@ -13,6 +13,7 @@ import {
 	PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/locales/client";
 import { useChatContext } from "./_providers/chat-provider";
 import type { MessageMetadata } from "./_types/types";
 import {
@@ -81,6 +82,7 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 		setCurrentBranchId,
 		setEditingMessageId,
 	} = useChatContext();
+	const t = useI18n();
 
 	const handleSubmit = (message: PromptInputMessage) => {
 		const hasText = Boolean(message.text);
@@ -104,7 +106,7 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 		}
 		sendMessage(
 			{
-				text: message.text || "Sent with attachments",
+				text: message.text || t("components.ai.input.DefaultAttachmentText"),
 				files: message.files,
 				metadata: {
 					branchId: branchId,

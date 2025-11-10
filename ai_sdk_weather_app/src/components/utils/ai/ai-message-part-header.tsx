@@ -19,7 +19,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useChatContext } from "./_providers/chat-provider";
 import type { MyUIMessage } from "./_types/types";
 
 interface AiMessageHeaderPartProps {
@@ -66,15 +65,13 @@ export function AiMessageHeaderPartSources({
 export function AiMessageHeaderPartReasoning({
 	...props
 }: AiMessageHeaderPartProps) {
-	const { status } = useChatContext();
-
 	const reasoningPart = props.message.parts.find(
 		(part) => part.type === "reasoning",
 	) as ReasoningUIPart;
 
 	return reasoningPart?.text ? (
 		<Reasoning
-			className={cn("w-full", status === "streaming" && "animate-pulse")}
+			className={cn("w-full")}
 			isStreaming={reasoningPart.state === "streaming"}
 			duration={props.message.metadata?.reasoningDuration}
 		>
