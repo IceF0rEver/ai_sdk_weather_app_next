@@ -1,13 +1,7 @@
 "use client";
 
 import { Droplet, Thermometer, Wind } from "lucide-react";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Weather } from "@/lib/ai/tools";
 
 interface AiToolWeatherProps {
@@ -29,9 +23,7 @@ export function AiToolWeather({ ...props }: AiToolWeatherProps) {
 
 				<div className="flex items-center gap-3">
 					<div className="text-right">
-						<div className="text-3xl font-semibold">
-							{Math.round(props.part?.main.temp ?? 0)}°C
-						</div>
+						<div className="text-3xl font-semibold">{Math.round(props.part?.main.temp ?? 0)}°C</div>
 						<div className="text-sm text-muted-foreground">
 							Ressenti {Math.round(props.part?.main.feels_like ?? 0)}°C
 						</div>
@@ -52,9 +44,7 @@ export function AiToolWeather({ ...props }: AiToolWeatherProps) {
 
 						<div className="flex items-center gap-2">
 							<Droplet className="w-4 h-4" />
-							<div className="text-sm">
-								Humidité {props.part?.main.humidity}%
-							</div>
+							<div className="text-sm">Humidité {props.part?.main.humidity}%</div>
 						</div>
 
 						<div className="flex items-center gap-2">

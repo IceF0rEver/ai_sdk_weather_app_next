@@ -11,8 +11,4 @@ export const messageMetadataSchema = z.object({
 
 export type MessageMetadata = z.infer<typeof messageMetadataSchema>;
 
-export type MyUIMessage = UIMessage<
-	MessageMetadata,
-	UIDataTypes,
-	InferUITools<typeof tools>
->;
+export type MyUIMessage = UIMessage<MessageMetadata, UIDataTypes, InferUITools<typeof tools>>;

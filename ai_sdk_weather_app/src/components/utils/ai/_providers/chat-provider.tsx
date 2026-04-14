@@ -1,10 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import {
-	DefaultChatTransport,
-	lastAssistantMessageIsCompleteWithToolCalls,
-} from "ai";
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 import { createContext, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
@@ -58,9 +55,7 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 	const [webSearch, setWebSearch] = useState<boolean>(false);
 
 	const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-	const [currentBranchId, setCurrentBranchId] = useState<string>(() =>
-		uuidv4(),
-	);
+	const [currentBranchId, setCurrentBranchId] = useState<string>(() => uuidv4());
 
 	const {
 		messages,

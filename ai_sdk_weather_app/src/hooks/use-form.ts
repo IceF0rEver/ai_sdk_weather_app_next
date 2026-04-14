@@ -3,12 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-	type DefaultValues,
-	type FieldValues,
-	type UseFormReturn,
-	useForm,
-} from "react-hook-form";
+import { type DefaultValues, type FieldValues, type UseFormReturn, useForm } from "react-hook-form";
 import type { z } from "zod";
 
 interface UseGenericFormOptions<T> {

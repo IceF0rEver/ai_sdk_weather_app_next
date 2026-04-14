@@ -1,11 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { mistral } from "@ai-sdk/mistral";
-import {
-	convertToModelMessages,
-	extractReasoningMiddleware,
-	streamText,
-	wrapLanguageModel,
-} from "ai";
+import { convertToModelMessages, extractReasoningMiddleware, streamText, wrapLanguageModel } from "ai";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
 import { tools } from "@/lib/ai/tools";
 
@@ -50,9 +45,7 @@ export async function POST(req: Request) {
 		messageMetadata: ({ part }) => {
 			switch (part.type) {
 				case "start": {
-					const lastUserMessage = [...messages]
-						.reverse()
-						.find((m) => m.role === "user");
+					const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
 					const branchId = lastUserMessage?.metadata?.branchId ?? randomUUID();
 					const parentMessageId = lastUserMessage?.id ?? null;
 					const createdAt = Date.now();
@@ -64,9 +57,7 @@ export async function POST(req: Request) {
 					};
 				}
 				case "reasoning-end": {
-					const reasoningDuration = Math.ceil(
-						(performance.now() - startTime) / 1000,
-					);
+					const reasoningDuration = Math.ceil((performance.now() - startTime) / 1000);
 					return { reasoningDuration };
 				}
 			}

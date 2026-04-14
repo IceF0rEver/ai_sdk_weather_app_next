@@ -1,10 +1,5 @@
 import type { VariantProps } from "class-variance-authority";
-import type {
-	Control,
-	FieldPath,
-	FieldValues,
-	UseFormReturn,
-} from "react-hook-form";
+import type { Control, FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 import type { buttonVariants } from "@/components/ui/button";
 import type { signIn } from "@/lib/auth/auth-client";
 

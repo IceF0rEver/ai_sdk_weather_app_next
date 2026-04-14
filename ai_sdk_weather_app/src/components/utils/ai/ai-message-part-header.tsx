@@ -2,78 +2,43 @@
 
 import type { ReasoningUIPart } from "ai";
 import { ChevronLeftIcon, ChevronRightIcon, FileIcon } from "lucide-react";
-import { nanoid } from "nanoid";
 import { useState } from "react";
 import { Image } from "@/components/ai-elements/image";
-import {
-	Reasoning,
-	ReasoningContent,
-	ReasoningTrigger,
-} from "@/components/ai-elements/reasoning";
-import {
-	Source,
-	Sources,
-	SourcesContent,
-	SourcesTrigger,
-} from "@/components/ai-elements/sources";
+import { Reasoning, ReasoningContent, ReasoningTrigger } from "@/components/ai-elements/reasoning";
+import { Source, Sources, SourcesContent, SourcesTrigger } from "@/components/ai-elements/sources";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { MyUIMessage } from "./_types/types";
 
-interface AiMessageHeaderPartProps {
+interface AiMessageProps {
 	message: MyUIMessage;
 }
 
-interface AiMessageHeaderPartFileProps
-	extends Pick<AiMessageHeaderPartProps, "message"> {}
+export function AiMessageHeaderPartSources({ message }: AiMessageProps) {
+	const sourceParts = message.parts.filter((part) => part.type === "source-url");
+	if (sourceParts.length === 0) return null;
 
-export function AiMessageHeaderPartSources({
-	...props
-}: AiMessageHeaderPartProps) {
 	return (
-		props.message.parts.filter((part) => part.type === "source-url").length >
-			0 && (
-			<Sources
-				className={cn(
-					props.message.role !== "user" ? "justify-start" : "justify-end",
-					"flex m-0",
-				)}
-			>
-				<SourcesTrigger
-					count={
-						props.message.parts.filter((part) => part.type === "source-url")
-							.length
-					}
-				/>
-				{props.message.parts
-					.filter((part) => part.type === "source-url")
-					.map((part, i) => (
-						<SourcesContent key={`${props.message.id}-${i}`}>
-							<Source
-								key={`${props.message.id}-${i}`}
-								href={part.url}
-								title={part.url}
-							/>
-						</SourcesContent>
-					))}
-			</Sources>
-		)
+		<Sources className={cn(message.role !== "user" ? "justify-start" : "justify-end", "flex m-0")}>
+			<SourcesTrigger count={sourceParts.length} />
+			{sourceParts.map((part, i) => (
+				<SourcesContent key={`${message.id}-${i}`}>
+					<Source href={part.url} title={part.url} />
+				</SourcesContent>
+			))}
+		</Sources>
 	);
 }
 
-export function AiMessageHeaderPartReasoning({
-	...props
-}: AiMessageHeaderPartProps) {
-	const reasoningPart = props.message.parts.find(
-		(part) => part.type === "reasoning",
-	) as ReasoningUIPart;
+export function AiMessageHeaderPartReasoning({ message }: AiMessageProps) {
+	const reasoningPart = message.parts.find((part) => part.type === "reasoning") as ReasoningUIPart;
 
 	return reasoningPart?.text ? (
 		<Reasoning
 			className={cn("w-full")}
 			isStreaming={reasoningPart.state === "streaming"}
-			duration={props.message.metadata?.reasoningDuration}
+			duration={message.metadata?.reasoningDuration}
 		>
 			<ReasoningTrigger />
 			<ReasoningContent>{reasoningPart.text}</ReasoningContent>
@@ -81,12 +46,8 @@ export function AiMessageHeaderPartReasoning({
 	) : null;
 }
 
-export function AiMessageHeaderPartFile({
-	...props
-}: AiMessageHeaderPartFileProps) {
-	const filtredMessages = props.message.parts.filter(
-		(part) => part.type === "file",
-	);
+export function AiMessageHeaderPartFile({ message }: AiMessageProps) {
+	const filtredMessages = message.parts.filter((part) => part.type === "file");
 
 	const [showAll, setShowAll] = useState(false);
 
@@ -94,14 +55,12 @@ export function AiMessageHeaderPartFile({
 
 	if (filtredMessages.length === 0) return null;
 
-	const messagesToShow = showAll
-		? filtredMessages
-		: filtredMessages.slice(0, 1);
+	const messagesToShow = showAll ? filtredMessages : filtredMessages.slice(0, 1);
 
 	return (
 		<div
 			className={cn(
-				props.message.role !== "user" ? "justify-start" : "justify-end",
+				message.role !== "user" ? "justify-start" : "justify-end",
 				"flex flex-nowrap gap-1 items-center",
 			)}
 		>
@@ -110,7 +69,7 @@ export function AiMessageHeaderPartFile({
 					if (msg.mediaType?.startsWith("image")) {
 						return (
 							<Image
-								key={nanoid()}
+								key={`${message.id}-${msg.url.slice(-8)}`}
 								base64={msg.url.split(",")[1]}
 								mediaType={msg.mediaType}
 								uint8Array={new Uint8Array([])}
@@ -121,10 +80,8 @@ export function AiMessageHeaderPartFile({
 						const condensedFileName = `${msg.filename?.slice(0, 3)}...${msg.filename?.split(".")[0].slice(-2)}.${msg.filename?.split(".")[1]}`;
 						return (
 							<Badge
-								variant={
-									props.message.role !== "user" ? "default" : "secondary"
-								}
-								key={nanoid()}
+								variant={message.role !== "user" ? "default" : "secondary"}
+								key={`${message.id}-${msg.filename}`}
 							>
 								<FileIcon />
 								<span>{condensedFileName}</span>

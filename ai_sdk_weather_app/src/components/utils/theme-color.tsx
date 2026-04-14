@@ -2,13 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useThemeContext } from "@/components/providers/theme-color-provider";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/locales/client";
 import type { ThemeColors } from "@/types/theme-types";
@@ -70,26 +64,16 @@ export default function ThemeColor() {
 	];
 
 	return (
-		<Select
-			onValueChange={(value) => setThemeColor(value as ThemeColors)}
-			defaultValue={themeColor}
-		>
+		<Select onValueChange={(value) => setThemeColor(value as ThemeColors)} defaultValue={themeColor}>
 			<SelectTrigger>
-				<SelectValue
-					placeholder={t("components.utils.themeColor.placeholder")}
-				/>
+				<SelectValue placeholder={t("components.utils.themeColor.placeholder")} />
 			</SelectTrigger>
 			<SelectContent>
 				{availableThemeColors.map(({ name, key, light, dark }) => (
 					<SelectItem key={name} value={key}>
 						<div className="flex flex-row gap-2">
 							<span
-								className={cn(
-									"rounded-full",
-									"w-[20px]",
-									"h-[20px]",
-									theme === "light" ? light : dark,
-								)}
+								className={cn("rounded-full", "w-[20px]", "h-[20px]", theme === "light" ? light : dark)}
 							/>
 							<span>{name}</span>
 						</div>

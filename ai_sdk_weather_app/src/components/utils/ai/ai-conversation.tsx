@@ -3,11 +3,7 @@
 import { AlertCircle, RefreshCcwIcon } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { Action, Actions } from "@/components/ai-elements/actions";
-import {
-	Conversation,
-	ConversationContent,
-	ConversationScrollButton,
-} from "@/components/ai-elements/conversation";
+import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { usePromptInputController } from "@/components/ai-elements/prompt-input";
 import { Button } from "@/components/ui/button";
@@ -95,8 +91,7 @@ export function AiConversationEditButton() {
 }
 
 export default function AiConversation({ ...props }: AiConversationProps) {
-	const { messages, error, editingMessageId, currentBranchId } =
-		useChatContext();
+	const { messages, error, editingMessageId, currentBranchId } = useChatContext();
 
 	const getMessagesForCurrentBranch = useCallback(() => {
 		const lastMessageInCurrentBranch = messages.findLast(
@@ -105,9 +100,7 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 
 		let currentMessageId = lastMessageInCurrentBranch?.id ?? null;
 
-		const messageByIdMap = new Map(
-			messages.map((message) => [message.id, message]),
-		);
+		const messageByIdMap = new Map(messages.map((message) => [message.id, message]));
 		const messagesInBranch: MyUIMessage[] = [];
 
 		while (currentMessageId) {
@@ -133,11 +126,7 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 					);
 				})}
 			</ConversationContent>
-			{editingMessageId ? (
-				<AiConversationEditButton />
-			) : (
-				<ConversationScrollButton />
-			)}
+			{editingMessageId ? <AiConversationEditButton /> : <ConversationScrollButton />}
 		</Conversation>
 	);
 }

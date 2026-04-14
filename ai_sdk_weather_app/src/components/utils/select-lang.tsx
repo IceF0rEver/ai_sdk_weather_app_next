@@ -1,13 +1,6 @@
 "use client";
 
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useChangeLocale, useCurrentLocale, useI18n } from "@/locales/client";
 
@@ -26,10 +19,7 @@ export default function SelectLang({ className }: SelectLangProps) {
 
 	return (
 		<div className={cn(className)}>
-			<Select
-				onValueChange={(value) => changeLocale(value as "fr" | "en")}
-				value={currentLocale}
-			>
+			<Select onValueChange={(value) => changeLocale(value as "fr" | "en")} value={currentLocale}>
 				<SelectTrigger>
 					<SelectValue placeholder={t("components.utils.selectLang.select")} />
 				</SelectTrigger>

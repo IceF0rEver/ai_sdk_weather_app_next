@@ -72,8 +72,7 @@ const WeathersListSchema = z.object({
 export type WeathersList = z.infer<typeof WeathersListSchema>;
 
 const getLocation = tool({
-	description:
-		"Récupère la localisation de l'utilisateur via son navigateur (latitude, longitude)",
+	description: "Récupère la localisation de l'utilisateur via son navigateur (latitude, longitude)",
 	inputSchema: z.object({}),
 	outputSchema: z.object({
 		latitude: z.number(),
@@ -82,8 +81,7 @@ const getLocation = tool({
 });
 
 const getCurrentWeatherByLocation = tool({
-	description:
-		"Récupère les données météorologique actuelles d'une location grâce à sa latitude et sa longitude",
+	description: "Récupère les données météorologique actuelles d'une location grâce à sa latitude et sa longitude",
 	inputSchema: z.object({
 		latitude: z.number(),
 		longitude: z.number(),
@@ -99,8 +97,7 @@ const getCurrentWeatherByLocation = tool({
 		const { object } = await generateObject({
 			model: mistral("mistral-small-latest"),
 			schema: WeatherSchema,
-			system:
-				"Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
+			system: "Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
 			prompt: JSON.stringify(json),
 		});
 
@@ -109,8 +106,7 @@ const getCurrentWeatherByLocation = tool({
 });
 
 const getCurrentWeatherByName = tool({
-	description:
-		"Récupère les données météorologique actuelles d'une location grâce à son nom",
+	description: "Récupère les données météorologique actuelles d'une location grâce à son nom",
 	inputSchema: z.object({
 		city: z.string(),
 		lang: z.string().max(2),
@@ -125,8 +121,7 @@ const getCurrentWeatherByName = tool({
 		const { object } = await generateObject({
 			model: mistral("mistral-small-latest"),
 			schema: WeatherSchema,
-			system:
-				"Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
+			system: "Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
 			prompt: JSON.stringify(json),
 		});
 
@@ -135,8 +130,7 @@ const getCurrentWeatherByName = tool({
 });
 
 const getWeatherByName = tool({
-	description:
-		"Récupère les données météorologique actuelles d'une location grâce à son nom",
+	description: "Récupère les données météorologique actuelles d'une location grâce à son nom",
 	inputSchema: z.object({
 		city: z.string(),
 		lang: z.string().max(2),
@@ -151,8 +145,7 @@ const getWeatherByName = tool({
 		const { object } = await generateObject({
 			model: mistral("mistral-small-latest"),
 			schema: WeathersListSchema,
-			system:
-				"Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
+			system: "Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
 			prompt: JSON.stringify(json),
 		});
 
@@ -161,8 +154,7 @@ const getWeatherByName = tool({
 });
 
 const getWeatherByLocation = tool({
-	description:
-		"Récupère les données météorologique futures d'une location grâce à sa latitude et sa longitude",
+	description: "Récupère les données météorologique futures d'une location grâce à sa latitude et sa longitude",
 	inputSchema: z.object({
 		latitude: z.number(),
 		longitude: z.number(),
@@ -178,8 +170,7 @@ const getWeatherByLocation = tool({
 		const { object } = await generateObject({
 			model: mistral("mistral-small-latest"),
 			schema: WeathersListSchema,
-			system:
-				"Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
+			system: "Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
 			prompt: JSON.stringify(json),
 		});
 

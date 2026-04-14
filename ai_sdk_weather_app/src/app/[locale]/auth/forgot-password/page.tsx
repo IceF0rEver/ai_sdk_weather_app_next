@@ -21,9 +21,7 @@ export default function Page() {
 
 	const [errorMessage, setErrorMessage] = useState<Record<string, string>>({});
 
-	const { form, onSubmit, isPending } = useGenericForm<
-		z.infer<typeof forgotPasswordSchema>
-	>({
+	const { form, onSubmit, isPending } = useGenericForm<z.infer<typeof forgotPasswordSchema>>({
 		schema: forgotPasswordSchema,
 		defaultValues: {
 			email: "",
@@ -40,15 +38,11 @@ export default function Page() {
 						{
 							onError: (ctx) => {
 								setErrorMessage({
-									betterError: t(
-										`BASE_ERROR_CODES.${ctx.error.code}` as keyof typeof string,
-									),
+									betterError: t(`BASE_ERROR_CODES.${ctx.error.code}` as keyof typeof string),
 								});
 							},
 							onSuccess: async () => {
-								toast.success(
-									t("components.auth.forgetPassword.toast.success"),
-								);
+								toast.success(t("components.auth.forgetPassword.toast.success"));
 								router.push("/auth/login");
 							},
 						},
@@ -69,20 +63,12 @@ export default function Page() {
 			description={t("components.auth.forgetPassword.description")}
 			className="w-full sm:w-sm"
 			footer={
-				<AuthFooter
-					href={"/auth/login"}
-					text={t("components.auth.link.login")}
-					label={t("button.login")}
-				/>
+				<AuthFooter href={"/auth/login"} text={t("components.auth.link.login")} label={t("button.login")} />
 			}
 		>
 			<AuthForm form={form} onSubmit={onSubmit} className="grid gap-4">
 				{errorMessage.betterError && (
-					<p
-						className="text-sm text-destructive"
-						aria-live="polite"
-						aria-atomic="true"
-					>
+					<p className="text-sm text-destructive" aria-live="polite" aria-atomic="true">
 						{errorMessage.betterError}
 					</p>
 				)}
