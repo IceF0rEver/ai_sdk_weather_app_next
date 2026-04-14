@@ -115,7 +115,7 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 	}, [currentBranchId, messages]);
 
 	return (
-		<Conversation className={cn("h-full", `${props.className}`)}>
+		<Conversation className={cn("h-full", props.className)}>
 			<ConversationContent>
 				{getMessagesForCurrentBranch().map((message, i) => {
 					return (

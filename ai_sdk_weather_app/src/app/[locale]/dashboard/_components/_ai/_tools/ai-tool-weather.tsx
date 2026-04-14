@@ -3,29 +3,30 @@
 import { Droplet, Thermometer, Wind } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Weather } from "@/lib/ai/tools";
+import { ToolUIPart } from "ai";
 
 interface AiToolWeatherProps {
-	part: Weather;
+	data: unknown;
+	state: ToolUIPart["state"];
 }
-
-export function AiToolWeather({ ...props }: AiToolWeatherProps) {
+function AiToolWeatherCard({ data }: { data: Weather }) {
 	return (
 		<Card className="bg-linear-to-br from-sky-50 to-white dark:from-sky-900 dark:to-black dark:border-none shadow-lg">
 			<CardHeader className="flex items-center justify-between gap-4">
 				<div>
 					<CardTitle className="text-lg">
-						{props.part?.name}, {props.part?.country}
+						{data?.name}, {data?.country}
 					</CardTitle>
 					<CardDescription className="text-sm text-muted-foreground">
-						{props.part?.weather.description}
+						{data?.weather.description}
 					</CardDescription>
 				</div>
 
 				<div className="flex items-center gap-3">
 					<div className="text-right">
-						<div className="text-3xl font-semibold">{Math.round(props.part?.main.temp ?? 0)}°C</div>
+						<div className="text-3xl font-semibold">{Math.round(data?.main.temp ?? 0)}°C</div>
 						<div className="text-sm text-muted-foreground">
-							Ressenti {Math.round(props.part?.main.feels_like ?? 0)}°C
+							Ressenti {Math.round(data?.main.feels_like ?? 0)}°C
 						</div>
 					</div>
 				</div>
@@ -37,20 +38,20 @@ export function AiToolWeather({ ...props }: AiToolWeatherProps) {
 						<div className="flex items-center gap-2">
 							<Thermometer className="w-4 h-4" />
 							<div className="text-sm">
-								Min {Math.round(props.part?.main.temp_min ?? 0)}° · Max{" "}
-								{Math.round(props.part?.main.temp_max ?? 0)}°
+								Min {Math.round(data?.main.temp_min ?? 0)}° · Max {Math.round(data?.main.temp_max ?? 0)}
+								°
 							</div>
 						</div>
 
 						<div className="flex items-center gap-2">
 							<Droplet className="w-4 h-4" />
-							<div className="text-sm">Humidité {props.part?.main.humidity}%</div>
+							<div className="text-sm">Humidité {data?.main.humidity}%</div>
 						</div>
 
 						<div className="flex items-center gap-2">
 							<Wind className="w-4 h-4" />
 							<div className="text-sm">
-								Vent {props.part?.wind.speed} m/s • {props.part?.wind.deg}°
+								Vent {data?.wind.speed} m/s • {data?.wind.deg}°
 							</div>
 						</div>
 					</div>
@@ -58,4 +59,13 @@ export function AiToolWeather({ ...props }: AiToolWeatherProps) {
 			</CardContent>
 		</Card>
 	);
+}
+
+export function AiToolWeather({ data, state }: AiToolWeatherProps) {
+	switch (state) {
+		case "output-available":
+			return <AiToolWeatherCard data={data as Weather} />;
+		default:
+			return null;
+	}
 }

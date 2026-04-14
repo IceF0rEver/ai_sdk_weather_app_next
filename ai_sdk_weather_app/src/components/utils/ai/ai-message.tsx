@@ -73,9 +73,9 @@ export function AiMessage({ ...props }: AiMessageProps) {
 							status === "streaming" ||
 							status === "submitted" ? (
 								<>
-									<AiMessageHeaderPartReasoning message={props.message} />
-									<AiMessageHeaderPartSources message={props.message} />
-									<AiMessageHeaderPartFile message={props.message} />
+									<AiMessageHeaderPartReasoning message={message} />
+									<AiMessageHeaderPartSources message={message} />
+									<AiMessageHeaderPartFile message={message} />
 
 									<Message from={message.role} className="p-1 overflow-auto">
 										<MessageContent

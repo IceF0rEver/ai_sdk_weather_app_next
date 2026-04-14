@@ -53,7 +53,7 @@ export function PromptInputToolbarSection({ ...props }: PromptInputToolbarSectio
 				{!props.disabledModelSelect ? <ToolBarInputModelSelect /> : null}
 			</PromptInputTools>
 
-			<PromptInputSubmit disabled={!input && !status} status={status} />
+			<PromptInputSubmit disabled={!input && status === "ready"} status={status} />
 		</PromptInputToolbar>
 	);
 }
@@ -123,7 +123,7 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 	return (
 		<PromptInput
 			onSubmit={status === "streaming" ? stop : status === "error" ? clearError : handleSubmit}
-			className={cn("mt-4", `${props.className}`)}
+			className={cn("mt-4", props.className)}
 			globalDrop
 			multiple
 		>

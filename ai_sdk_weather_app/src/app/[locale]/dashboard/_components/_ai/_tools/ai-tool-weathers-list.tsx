@@ -4,23 +4,26 @@ import { Droplet, Thermometer, Wind } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import type { WeathersList } from "@/lib/ai/tools";
+import { ToolUIPart } from "ai";
 
 interface AiToolWeathersListProps {
-	part: WeathersList;
+	data: unknown;
+	state: ToolUIPart["state"];
 }
 
-export function AiToolWeathersList({ part }: AiToolWeathersListProps) {
-	return part ? (
+function AiToolWeathersListCard({ data }: { data: WeathersList }) {
+	return (
 		<Card className="bg-linear-to-br from-sky-50 to-white dark:from-sky-900 dark:to-black dark:border-none shadow-lg">
 			<CardHeader>
 				<CardTitle className="text-lg">
-					{part.name}, {part.country}
+					{data.name}, {data.country}
 				</CardTitle>
 			</CardHeader>
+
 			<CardContent>
 				<Carousel opts={{ loop: false }} orientation="horizontal">
 					<CarouselContent>
-						{part.weather.map((w, i) => {
+						{data.weather.map((w, i) => {
 							const formattedDate = new Date(w.clouds.dt * 1000).toLocaleString("fr-FR", {
 								weekday: "short",
 								day: "2-digit",
@@ -38,6 +41,7 @@ export function AiToolWeathersList({ part }: AiToolWeathersListProps) {
 												<p className="text-xs text-muted-foreground">{formattedDate}</p>
 												<p className="text-sm font-medium mt-1 capitalize">{w.description}</p>
 											</div>
+
 											<div className="mt-2 space-y-2 text-sm">
 												<div className="flex items-center justify-center gap-1 font-semibold">
 													{Math.round(w.main.temp)}°C
@@ -45,22 +49,26 @@ export function AiToolWeathersList({ part }: AiToolWeathersListProps) {
 														(ressenti {Math.round(w.main.feels_like)}°)
 													</span>
 												</div>
+
 												<div className="flex items-center gap-2 justify-center text-muted-foreground">
 													<Thermometer className="w-4 h-4" />
 													<span>
 														{Math.round(w.main.temp_min)}° / {Math.round(w.main.temp_max)}°
 													</span>
 												</div>
+
 												<div className="flex items-center gap-2 justify-center text-muted-foreground">
 													<Droplet className="w-4 h-4" />
 													<span>{w.main.humidity}%</span>
 												</div>
+
 												<div className="flex items-center gap-2 justify-center text-muted-foreground">
 													<Wind className="w-4 h-4" />
 													<span>
 														{w.wind.speed} m/s • {w.wind.deg}°
 													</span>
 												</div>
+
 												<p className="text-xs text-center text-muted-foreground">
 													Nuages : {w.clouds.all}%
 												</p>
@@ -74,5 +82,14 @@ export function AiToolWeathersList({ part }: AiToolWeathersListProps) {
 				</Carousel>
 			</CardContent>
 		</Card>
-	) : null;
+	);
+}
+
+export function AiToolWeathersList({ data, state }: AiToolWeathersListProps) {
+	switch (state) {
+		case "output-available":
+			return <AiToolWeathersListCard data={data as WeathersList} />;
+		default:
+			return null;
+	}
 }

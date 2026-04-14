@@ -1,10 +1,17 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from "ai";
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls, ToolUIPart } from "ai";
 import { createContext, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
+
+type ToolsType = Record<
+	string,
+	{
+		component: React.ComponentType<{ data: unknown; state: ToolUIPart["state"] }>;
+	}
+>;
 
 interface Model {
 	name: string;
@@ -13,6 +20,7 @@ interface Model {
 interface ChatProviderProps {
 	children: React.ReactNode;
 	models: Model[];
+	tools?: ToolsType;
 }
 
 interface ChatContextValue {
@@ -44,6 +52,8 @@ interface ChatContextValue {
 
 	currentBranchId: string;
 	setCurrentBranchId: (val: string) => void;
+
+	tools: ToolsType;
 }
 
 const ChatContext = createContext<ChatContextValue | undefined>(undefined);
@@ -53,6 +63,8 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 	const [models, setModels] = useState<Model[]>(props.models);
 	const [model, setModel] = useState<string>(props.models[0]?.value);
 	const [webSearch, setWebSearch] = useState<boolean>(false);
+
+	const tools = props.tools ?? {};
 
 	const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
 	const [currentBranchId, setCurrentBranchId] = useState<string>(() => uuidv4());
@@ -124,6 +136,7 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 				setEditingMessageId,
 				currentBranchId,
 				setCurrentBranchId,
+				tools,
 			}}
 		>
 			{props.children}
