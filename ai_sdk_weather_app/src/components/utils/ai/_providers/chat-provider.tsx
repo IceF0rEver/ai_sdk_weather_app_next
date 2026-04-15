@@ -32,8 +32,9 @@ interface ChatContextValue {
 	clearError: ReturnType<typeof useChat<MyUIMessage>>["clearError"];
 	error: ReturnType<typeof useChat<MyUIMessage>>["error"];
 	setMessages: ReturnType<typeof useChat<MyUIMessage>>["setMessages"];
-	addToolResult: ReturnType<typeof useChat<MyUIMessage>>["addToolResult"];
+	addToolOutput: ReturnType<typeof useChat<MyUIMessage>>["addToolOutput"];
 	resumeStream: ReturnType<typeof useChat<MyUIMessage>>["resumeStream"];
+	addToolApprovalResponse: ReturnType<typeof useChat<MyUIMessage>>["addToolApprovalResponse"];
 
 	input: string;
 	setInput: (val: string) => void;
@@ -78,8 +79,9 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 		clearError,
 		error,
 		setMessages,
-		addToolResult,
+		addToolOutput,
 		resumeStream,
+		addToolApprovalResponse,
 	} = useChat<MyUIMessage>({
 		generateId: () => uuidv4(),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
@@ -96,7 +98,7 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 			switch (toolCall.toolName) {
 				case "getLocation": {
 					navigator.geolocation.getCurrentPosition((position) => {
-						addToolResult({
+						addToolOutput({
 							tool: "getLocation",
 							toolCallId: toolCall.toolCallId,
 							output: {
@@ -122,7 +124,7 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 				status,
 				error,
 				setMessages,
-				addToolResult,
+				addToolOutput,
 				resumeStream,
 				input,
 				setInput,
@@ -137,6 +139,7 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 				currentBranchId,
 				setCurrentBranchId,
 				tools,
+				addToolApprovalResponse,
 			}}
 		>
 			{props.children}
