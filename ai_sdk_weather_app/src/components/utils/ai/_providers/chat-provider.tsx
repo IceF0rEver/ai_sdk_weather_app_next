@@ -20,7 +20,7 @@ interface Model {
 interface ChatProviderProps {
 	children: React.ReactNode;
 	models: Model[];
-	tools?: ToolsType;
+	toolsRender?: ToolsType;
 }
 
 interface ChatContextValue {
@@ -51,7 +51,7 @@ interface ChatContextValue {
 	currentBranchId: string;
 	setCurrentBranchId: (val: string) => void;
 
-	tools: ToolsType;
+	toolsRender: ToolsType;
 }
 
 const ChatContext = createContext<ChatContextValue | undefined>(undefined);
@@ -61,7 +61,7 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 	const [model, setModel] = useState<string>(props.models[0]?.value);
 	const [webSearch, setWebSearch] = useState<boolean>(false);
 
-	const tools = props.tools ?? {};
+	const toolsRender = props.toolsRender ?? {};
 
 	const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
 	const [currentBranchId, setCurrentBranchId] = useState<string>(() => uuidv4());
@@ -132,7 +132,7 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 				setEditingMessageId,
 				currentBranchId,
 				setCurrentBranchId,
-				tools,
+				toolsRender,
 				addToolApprovalResponse,
 			}}
 		>

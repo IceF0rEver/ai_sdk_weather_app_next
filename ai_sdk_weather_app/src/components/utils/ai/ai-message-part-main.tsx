@@ -16,7 +16,7 @@ function isToolPart(part: any): part is ToolUIPart {
 }
 
 export function AiMessageMainPart({ ...props }: AiMessageMainPartProps) {
-	const { tools } = useChatContext();
+	const { toolsRender } = useChatContext();
 
 	return (
 		<>
@@ -29,11 +29,11 @@ export function AiMessageMainPart({ ...props }: AiMessageMainPartProps) {
 					);
 				}
 				if (isToolPart(part)) {
-					const tool = tools[part.type];
+					const toolRender = toolsRender[part.type];
 
-					if (!tool) return null;
+					if (!toolRender) return null;
 
-					const Tool = tool.component;
+					const Tool = toolRender.component;
 					return <Tool key={`${props.message.id}-${i}`} data={part.output} state={part.state} />;
 				}
 

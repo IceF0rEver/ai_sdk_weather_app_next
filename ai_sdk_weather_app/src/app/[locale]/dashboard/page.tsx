@@ -19,7 +19,7 @@ export default async function Page() {
 	};
 
 	return (
-		<ChatProvider models={models} tools={tools}>
+		<ChatProvider models={models} toolsRender={tools}>
 			<AiChat disabledModelSelect disabledwebSearch />
 		</ChatProvider>
 	);
