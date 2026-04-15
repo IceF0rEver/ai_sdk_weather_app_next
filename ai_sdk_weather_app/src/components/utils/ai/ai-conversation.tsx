@@ -102,13 +102,27 @@ export default function AiConversation({ ...props }: AiConversationProps) {
 
 		const messageByIdMap = new Map(messages.map((message) => [message.id, message]));
 		const messagesInBranch: MyUIMessage[] = [];
+		const visited = new Set<string>();
 
 		while (currentMessageId) {
+			if (visited.has(currentMessageId)) {
+				console.error("Cycle détecté dans le branching", currentMessageId);
+				break;
+			}
+			visited.add(currentMessageId);
+
 			const currentMessage = messageByIdMap.get(currentMessageId);
-			if (!currentMessage) break;
+			if (!currentMessage) {
+				console.warn("Message introuvable dans la chaîne", currentMessageId);
+				break;
+			}
+			if (!currentMessage.metadata) {
+				console.warn("Message sans metadata", currentMessage.id);
+				break;
+			}
 
 			messagesInBranch.push(currentMessage);
-			currentMessageId = currentMessage.metadata?.parentMessageId ?? null;
+			currentMessageId = currentMessage.metadata.parentMessageId ?? null;
 		}
 
 		return messagesInBranch.reverse();
