@@ -65,6 +65,18 @@ export function AiToolWeather({ data, state }: AiToolWeatherProps) {
 	switch (state) {
 		case "output-available":
 			return <AiToolWeatherCard data={data as Weather} />;
+		case "approval-requested":
+			return <div></div>;
+		case "input-available":
+			return <div></div>;
+		case "approval-responded":
+			return <div></div>;
+		case "input-streaming":
+			return <div></div>;
+		case "output-denied":
+			return <div></div>;
+		case "output-error":
+			return <div></div>;
 		default:
 			return null;
 	}

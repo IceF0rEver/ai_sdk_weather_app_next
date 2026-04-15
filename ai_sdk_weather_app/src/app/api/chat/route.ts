@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 				tagName: "think",
 			}),
 		}),
-		messages: convertToModelMessages(messages),
+		messages: await convertToModelMessages(messages),
 		tools,
 		toolChoice: "auto",
 		system:
