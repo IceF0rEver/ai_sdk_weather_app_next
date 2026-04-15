@@ -11,6 +11,7 @@ import {
 	PromptInputTextarea,
 	PromptInputToolbar,
 	PromptInputTools,
+	usePromptInputController,
 } from "@/components/ai-elements/prompt-input";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/locales/client";
@@ -42,7 +43,8 @@ export function PromptInputBodySection() {
 }
 
 export function PromptInputToolbarSection({ ...props }: PromptInputToolbarSectionProps) {
-	const { status, input } = useChatContext();
+	const { status } = useChatContext();
+	const promptInputController = usePromptInputController();
 	return (
 		<PromptInputToolbar>
 			<PromptInputTools>
@@ -53,7 +55,10 @@ export function PromptInputToolbarSection({ ...props }: PromptInputToolbarSectio
 				{!props.disabledModelSelect ? <ToolBarInputModelSelect /> : null}
 			</PromptInputTools>
 
-			<PromptInputSubmit disabled={!input && status === "ready"} status={status} />
+			<PromptInputSubmit
+				disabled={!Boolean(promptInputController.textInput.value) && status === "ready"}
+				status={status}
+			/>
 		</PromptInputToolbar>
 	);
 }
