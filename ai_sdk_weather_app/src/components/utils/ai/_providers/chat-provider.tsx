@@ -36,9 +36,6 @@ interface ChatContextValue {
 	resumeStream: ReturnType<typeof useChat<MyUIMessage>>["resumeStream"];
 	addToolApprovalResponse: ReturnType<typeof useChat<MyUIMessage>>["addToolApprovalResponse"];
 
-	input: string;
-	setInput: (val: string) => void;
-
 	model: string;
 	setModel: (val: string) => void;
 
@@ -60,7 +57,6 @@ interface ChatContextValue {
 const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 
 export const ChatProvider = ({ ...props }: ChatProviderProps) => {
-	const [input, setInput] = useState<string>("");
 	const [models, setModels] = useState<Model[]>(props.models);
 	const [model, setModel] = useState<string>(props.models[0]?.value);
 	const [webSearch, setWebSearch] = useState<boolean>(false);
@@ -126,8 +122,6 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 				setMessages,
 				addToolOutput,
 				resumeStream,
-				input,
-				setInput,
 				model,
 				setModel,
 				models,

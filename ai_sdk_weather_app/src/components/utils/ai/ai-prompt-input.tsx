@@ -30,14 +30,18 @@ interface AiPromptInputProps extends PromptInputToolbarSectionProps {
 }
 
 export function PromptInputBodySection() {
-	const { input, setInput } = useChatContext();
+	const promptInputController = usePromptInputController();
+
 	return (
 		<PromptInputBody>
 			<PromptInputAttachments>
 				{(attachment) => <PromptInputAttachment data={attachment} />}
 			</PromptInputAttachments>
 
-			<PromptInputTextarea onChange={(e) => setInput(e.target.value)} value={input} />
+			<PromptInputTextarea
+				onChange={(e) => promptInputController.textInput.setInput(e.target.value)}
+				value={promptInputController.textInput.value}
+			/>
 		</PromptInputBody>
 	);
 }
@@ -74,10 +78,11 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 		sendMessage,
 		model,
 		webSearch,
-		setInput,
 		setCurrentBranchId,
 		setEditingMessageId,
 	} = useChatContext();
+	const promptInputController = usePromptInputController();
+
 	const t = useI18n();
 
 	const handleSubmit = (message: PromptInputMessage) => {
@@ -118,7 +123,7 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 			},
 		);
 
-		setInput("");
+		promptInputController.textInput.setInput("");
 		if (editingMessageId) {
 			setCurrentBranchId(branchId);
 		}
