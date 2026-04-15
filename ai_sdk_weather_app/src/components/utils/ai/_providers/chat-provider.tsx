@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls, ToolUIPart } from "ai";
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 import { createContext, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { MyUIMessage } from "@/components/utils/ai/_types/types";
@@ -9,7 +9,7 @@ import type { MyUIMessage } from "@/components/utils/ai/_types/types";
 type ToolsType = Record<
 	string,
 	{
-		component: React.ComponentType<{ data: unknown; state: ToolUIPart["state"] }>;
+		component: React.ComponentType<{ part: unknown }>;
 	}
 >;
 

@@ -1,12 +1,8 @@
 "use client";
 
-import type { ReasoningUIPart } from "ai";
-import { ChevronLeftIcon, ChevronRightIcon, FileIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Image } from "@/components/ai-elements/image";
-import { Reasoning, ReasoningContent, ReasoningTrigger } from "@/components/ai-elements/reasoning";
 import { Source, Sources, SourcesContent, SourcesTrigger } from "@/components/ai-elements/sources";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { MyUIMessage } from "./_types/types";
@@ -30,21 +26,6 @@ export function AiMessageHeaderPartSources({ message }: AiMessageProps) {
 			))}
 		</Sources>
 	);
-}
-
-export function AiMessageHeaderPartReasoning({ message }: AiMessageProps) {
-	const reasoningPart = message.parts.find((part) => part.type === "reasoning") as ReasoningUIPart;
-
-	return reasoningPart?.text ? (
-		<Reasoning
-			className={cn("w-full")}
-			isStreaming={reasoningPart.state === "streaming"}
-			duration={message.metadata?.reasoningDuration}
-		>
-			<ReasoningTrigger />
-			<ReasoningContent>{reasoningPart.text}</ReasoningContent>
-		</Reasoning>
-	) : null;
 }
 
 export function AiMessageHeaderPartFile({ message }: AiMessageProps) {

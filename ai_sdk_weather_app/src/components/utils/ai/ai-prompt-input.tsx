@@ -60,7 +60,7 @@ export function PromptInputToolbarSection({ ...props }: PromptInputToolbarSectio
 			</PromptInputTools>
 
 			<PromptInputSubmit
-				disabled={!Boolean(promptInputController.textInput.value) && status === "ready"}
+				disabled={!promptInputController.textInput.value && status === "ready"}
 				status={status}
 			/>
 		</PromptInputToolbar>

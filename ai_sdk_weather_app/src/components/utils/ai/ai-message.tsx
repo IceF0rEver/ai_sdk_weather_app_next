@@ -9,11 +9,7 @@ import { useSession } from "@/lib/auth/auth-client";
 import { useChatContext } from "./_providers/chat-provider";
 import type { MyUIMessage } from "./_types/types";
 import { AiMessageFooterPartAction } from "./ai-message-part-footer";
-import {
-	AiMessageHeaderPartFile,
-	AiMessageHeaderPartReasoning,
-	AiMessageHeaderPartSources,
-} from "./ai-message-part-header";
+import { AiMessageHeaderPartFile, AiMessageHeaderPartSources } from "./ai-message-part-header";
 import { AiMessageMainPart } from "./ai-message-part-main";
 
 interface AiMessageProps {
@@ -73,7 +69,6 @@ export function AiMessage({ ...props }: AiMessageProps) {
 							status === "streaming" ||
 							status === "submitted" ? (
 								<>
-									<AiMessageHeaderPartReasoning message={message} />
 									<AiMessageHeaderPartSources message={message} />
 									<AiMessageHeaderPartFile message={message} />
 

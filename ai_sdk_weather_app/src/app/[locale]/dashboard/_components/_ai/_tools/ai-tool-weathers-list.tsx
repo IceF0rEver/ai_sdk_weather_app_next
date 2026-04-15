@@ -7,8 +7,7 @@ import type { WeathersList } from "@/lib/ai/tools";
 import { ToolUIPart } from "ai";
 
 interface AiToolWeathersListProps {
-	data: unknown;
-	state: ToolUIPart["state"];
+	part: ToolUIPart;
 }
 
 function AiToolWeathersListCard({ data }: { data: WeathersList }) {
@@ -85,10 +84,10 @@ function AiToolWeathersListCard({ data }: { data: WeathersList }) {
 	);
 }
 
-export function AiToolWeathersList({ data, state }: AiToolWeathersListProps) {
-	switch (state) {
+export function AiToolWeathersList({ part }: AiToolWeathersListProps) {
+	switch (part.state) {
 		case "output-available":
-			return <AiToolWeathersListCard data={data as WeathersList} />;
+			return <AiToolWeathersListCard data={part.output as WeathersList} />;
 		default:
 			return null;
 	}

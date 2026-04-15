@@ -62,5 +62,9 @@ export async function POST(req: Request) {
 				}
 			}
 		},
+		onError: (error) => {
+			console.error("AI error:", error);
+			return "An error occurred";
+		},
 	});
 }
