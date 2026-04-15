@@ -21,6 +21,7 @@ interface ChatProviderProps {
 	children: React.ReactNode;
 	models: Model[];
 	toolsRender?: ToolsType;
+	apiURL?: string;
 }
 
 interface ChatContextValue {
@@ -63,6 +64,8 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 
 	const toolsRender = props.toolsRender ?? {};
 
+	const apiURL = props.apiURL ?? "/api/chat";
+
 	const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
 	const [currentBranchId, setCurrentBranchId] = useState<string>(() => uuidv4());
 
@@ -82,10 +85,7 @@ export const ChatProvider = ({ ...props }: ChatProviderProps) => {
 		generateId: () => uuidv4(),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
 		transport: new DefaultChatTransport({
-			api: "/api/chat",
-			body: {
-				model: model,
-			},
+			api: apiURL,
 		}),
 		async onToolCall({ toolCall }) {
 			if (toolCall.dynamic) {

@@ -1,5 +1,5 @@
 import { mistral } from "@ai-sdk/mistral";
-import { generateObject, tool } from "ai";
+import { generateText, tool, Output } from "ai";
 import { z } from "zod";
 
 const WeatherSchema = z.object({
@@ -35,6 +35,7 @@ const WeatherSchema = z.object({
 		all: z.number(),
 	}),
 });
+
 export type Weather = z.infer<typeof WeatherSchema>;
 
 const WeathersListSchema = z.object({
@@ -69,7 +70,30 @@ const WeathersListSchema = z.object({
 		}),
 	),
 });
+
 export type WeathersList = z.infer<typeof WeathersListSchema>;
+
+function normalizeCurrentWeather(json: any) {
+	return {
+		name: json.name,
+		country: json.sys?.country,
+
+		coord: {
+			lat: json.coord.lat,
+			lon: json.coord.lon,
+		},
+
+		weather: {
+			main: json.weather?.[0]?.main,
+			description: json.weather?.[0]?.description,
+			icon: json.weather?.[0]?.icon,
+		},
+
+		main: json.main,
+		wind: json.wind,
+		clouds: json.clouds,
+	};
+}
 
 const getLocation = tool({
 	description: "Récupère la localisation de l'utilisateur via son navigateur (latitude, longitude)",
@@ -81,7 +105,7 @@ const getLocation = tool({
 });
 
 const getCurrentWeatherByLocation = tool({
-	description: "Récupère les données météorologique actuelles d'une location grâce à sa latitude et sa longitude",
+	description: "Météo actuelle via coordonnées",
 	inputSchema: z.object({
 		latitude: z.number(),
 		longitude: z.number(),
@@ -89,67 +113,59 @@ const getCurrentWeatherByLocation = tool({
 	}),
 	outputSchema: WeatherSchema,
 	execute: async ({ latitude, longitude, lang }) => {
-		const data = await fetch(
+		const res = await fetch(
 			`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${process.env.OPEN_WEATHER_API_KEY}&lang=${lang}&units=metric`,
 		);
-		const json = await data.json();
 
-		const { object } = await generateObject({
-			model: mistral("mistral-small-latest"),
-			schema: WeatherSchema,
-			system: "Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
-			prompt: JSON.stringify(json),
-		});
+		const json = await res.json();
 
-		return object;
+		return WeatherSchema.parse(normalizeCurrentWeather(json));
 	},
 });
 
 const getCurrentWeatherByName = tool({
-	description: "Récupère les données météorologique actuelles d'une location grâce à son nom",
+	description: "Météo actuelle via nom de ville",
 	inputSchema: z.object({
 		city: z.string(),
 		lang: z.string().max(2),
 	}),
 	outputSchema: WeatherSchema,
 	execute: async ({ city, lang }) => {
-		const data = await fetch(
+		const res = await fetch(
 			`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.OPEN_WEATHER_API_KEY}&lang=${lang}&units=metric`,
 		);
-		const json = await data.json();
 
-		const { object } = await generateObject({
-			model: mistral("mistral-small-latest"),
-			schema: WeatherSchema,
-			system: "Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
-			prompt: JSON.stringify(json),
-		});
+		const json = await res.json();
 
-		return object;
+		return WeatherSchema.parse(normalizeCurrentWeather(json));
 	},
 });
 
 const getWeatherByName = tool({
-	description: "Récupère les données météorologique actuelles d'une location grâce à son nom",
+	description: "Récupère les données météorologique futures d'une location grâce à son nom",
 	inputSchema: z.object({
 		city: z.string(),
 		lang: z.string().max(2),
 	}),
 	outputSchema: WeathersListSchema,
+
 	execute: async ({ city, lang }) => {
-		const data = await fetch(
+		return fetch(
 			`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${process.env.OPEN_WEATHER_API_KEY}&lang=${lang}&units=metric`,
-		);
-		const json = await data.json();
-
-		const { object } = await generateObject({
-			model: mistral("mistral-small-latest"),
-			schema: WeathersListSchema,
-			system: "Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
-			prompt: JSON.stringify(json),
-		});
-
-		return object;
+		)
+			.then((res) => res.json())
+			.then(async (json) => {
+				return generateText({
+					model: mistral("mistral-small-latest"),
+					output: Output.object({
+						schema: WeathersListSchema,
+					}),
+					system: "Convertis les données météo que tu recevras en un objet JSON structuré sur base de ton schéma",
+					prompt: JSON.stringify(json),
+				}).then(({ output }) => {
+					return output;
+				});
+			});
 	},
 });
 
@@ -162,19 +178,22 @@ const getWeatherByLocation = tool({
 	}),
 	outputSchema: WeathersListSchema,
 	execute: async ({ latitude, longitude, lang }) => {
-		const data = await fetch(
+		return fetch(
 			`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${process.env.OPEN_WEATHER_API_KEY}&lang=${lang}&units=metric`,
-		);
-		const json = await data.json();
-
-		const { object } = await generateObject({
-			model: mistral("mistral-small-latest"),
-			schema: WeathersListSchema,
-			system: "Convertis les donnés météo que tu recevras en un objet JSON structuré sur base de ton schéma",
-			prompt: JSON.stringify(json),
-		});
-
-		return object;
+		)
+			.then((res) => res.json())
+			.then(async (json) => {
+				return generateText({
+					model: mistral("mistral-small-latest"),
+					output: Output.object({
+						schema: WeathersListSchema,
+					}),
+					system: "Convertis les données météo que tu recevras en un objet JSON structuré sur base de ton schéma",
+					prompt: JSON.stringify(json),
+				}).then(({ output }) => {
+					return output;
+				});
+			});
 	},
 });
 
