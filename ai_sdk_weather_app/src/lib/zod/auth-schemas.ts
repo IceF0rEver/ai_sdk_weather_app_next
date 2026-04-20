@@ -19,16 +19,8 @@ export const authSchemas = (t: ReturnType<typeof useI18n>) => ({
 			email: authTableSchema.shape.email.email(t("zod.email")),
 			password: z.string().min(6, t("zod.min.password")),
 			passwordConfirmation: z.string(),
-			firstName: z
-				.string()
-				.min(1, t("zod.min.firstName"))
-				.trim()
-				.regex(/^\S+$/, t("zod.space")),
-			lastName: z
-				.string()
-				.min(1, t("zod.min.lastName"))
-				.trim()
-				.regex(/^\S+$/, t("zod.space")),
+			firstName: z.string().min(1, t("zod.min.firstName")).trim().regex(/^\S+$/, t("zod.space")),
+			lastName: z.string().min(1, t("zod.min.lastName")).trim().regex(/^\S+$/, t("zod.space")),
 			image: z.string().optional(),
 		})
 		.refine((data) => data.password === data.passwordConfirmation, {
@@ -63,16 +55,8 @@ export const authSchemas = (t: ReturnType<typeof useI18n>) => ({
 	updateUser: z.object({
 		id: authTableSchema.shape.id,
 		email: authTableSchema.shape.email.email(t("zod.email")),
-		firstName: z
-			.string()
-			.min(1, t("zod.min.firstName"))
-			.trim()
-			.regex(/^\S+$/, t("zod.space")),
-		lastName: z
-			.string()
-			.min(1, t("zod.min.lastName"))
-			.trim()
-			.regex(/^\S+$/, t("zod.space")),
+		firstName: z.string().min(1, t("zod.min.firstName")).trim().regex(/^\S+$/, t("zod.space")),
+		lastName: z.string().min(1, t("zod.min.lastName")).trim().regex(/^\S+$/, t("zod.space")),
 		image: z.string(),
 	}),
 });

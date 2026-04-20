@@ -11,16 +11,13 @@ import {
 	PromptInputTextarea,
 	PromptInputToolbar,
 	PromptInputTools,
+	usePromptInputController,
 } from "@/components/ai-elements/prompt-input";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/locales/client";
 import { useChatContext } from "./_providers/chat-provider";
 import type { MessageMetadata } from "./_types/types";
-import {
-	ToolBarInputActionMenu,
-	ToolBarInputButton,
-	ToolBarInputModelSelect,
-} from "./ai-toolbar";
+import { ToolBarInputActionMenu, ToolBarInputButton, ToolBarInputModelSelect } from "./ai-toolbar";
 
 interface PromptInputToolbarSectionProps {
 	disabledFile?: boolean;
@@ -33,7 +30,8 @@ interface AiPromptInputProps extends PromptInputToolbarSectionProps {
 }
 
 export function PromptInputBodySection() {
-	const { input, setInput } = useChatContext();
+	const promptInputController = usePromptInputController();
+
 	return (
 		<PromptInputBody>
 			<PromptInputAttachments>
@@ -41,17 +39,16 @@ export function PromptInputBodySection() {
 			</PromptInputAttachments>
 
 			<PromptInputTextarea
-				onChange={(e) => setInput(e.target.value)}
-				value={input}
+				onChange={(e) => promptInputController.textInput.setInput(e.target.value)}
+				value={promptInputController.textInput.value}
 			/>
 		</PromptInputBody>
 	);
 }
 
-export function PromptInputToolbarSection({
-	...props
-}: PromptInputToolbarSectionProps) {
-	const { status, input } = useChatContext();
+export function PromptInputToolbarSection({ ...props }: PromptInputToolbarSectionProps) {
+	const { status } = useChatContext();
+	const promptInputController = usePromptInputController();
 	return (
 		<PromptInputToolbar>
 			<PromptInputTools>
@@ -62,7 +59,10 @@ export function PromptInputToolbarSection({
 				{!props.disabledModelSelect ? <ToolBarInputModelSelect /> : null}
 			</PromptInputTools>
 
-			<PromptInputSubmit disabled={!input && !status} status={status} />
+			<PromptInputSubmit
+				disabled={!promptInputController.textInput.value && status === "ready"}
+				status={status}
+			/>
 		</PromptInputToolbar>
 	);
 }
@@ -78,10 +78,11 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 		sendMessage,
 		model,
 		webSearch,
-		setInput,
 		setCurrentBranchId,
 		setEditingMessageId,
 	} = useChatContext();
+	const promptInputController = usePromptInputController();
+
 	const t = useI18n();
 
 	const handleSubmit = (message: PromptInputMessage) => {
@@ -122,7 +123,7 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 			},
 		);
 
-		setInput("");
+		promptInputController.textInput.setInput("");
 		if (editingMessageId) {
 			setCurrentBranchId(branchId);
 		}
@@ -131,14 +132,8 @@ export default function AiPromptInput({ ...props }: AiPromptInputProps) {
 
 	return (
 		<PromptInput
-			onSubmit={
-				status === "streaming"
-					? stop
-					: status === "error"
-						? clearError
-						: handleSubmit
-			}
-			className={cn("mt-4", `${props.className}`)}
+			onSubmit={status === "streaming" ? stop : status === "error" ? clearError : handleSubmit}
+			className={cn("mt-4", props.className)}
 			globalDrop
 			multiple
 		>

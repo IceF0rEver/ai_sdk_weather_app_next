@@ -20,9 +20,7 @@ export default function Page() {
 	const signUpSchema = authSchemas(t).signUp;
 	const [errorMessage, setErrorMessage] = useState<Record<string, string>>({});
 
-	const { form, onSubmit, isPending } = useGenericForm<
-		z.infer<typeof signUpSchema>
-	>({
+	const { form, onSubmit, isPending } = useGenericForm<z.infer<typeof signUpSchema>>({
 		schema: signUpSchema,
 		defaultValues: {
 			email: "",
@@ -54,9 +52,7 @@ export default function Page() {
 						{
 							onError: (ctx) => {
 								setErrorMessage({
-									betterError: t(
-										`BASE_ERROR_CODES.${ctx.error.code}` as keyof typeof string,
-									),
+									betterError: t(`BASE_ERROR_CODES.${ctx.error.code}` as keyof typeof string),
 								});
 							},
 							onSuccess: async () => {
@@ -88,11 +84,7 @@ export default function Page() {
 		>
 			<AuthForm form={form} onSubmit={onSubmit} className="grid gap-4">
 				{errorMessage.betterError && (
-					<p
-						className="text-sm text-destructive"
-						aria-live="polite"
-						aria-atomic="true"
-					>
+					<p className="text-sm text-destructive" aria-live="polite" aria-atomic="true">
 						{errorMessage.betterError}
 					</p>
 				)}

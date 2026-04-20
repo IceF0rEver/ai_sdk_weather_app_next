@@ -96,10 +96,7 @@ export function AppSidebar() {
 										<SidebarMenuSubItem key={item.title}>
 											<SidebarMenuSubButton
 												asChild
-												isActive={
-													pathname.split("/").at(-1) ===
-													item.url?.split("/").at(-1)
-												}
+												isActive={pathname.split("/").at(-1) === item.url?.split("/").at(-1)}
 												className="transition-shadow data-[active=true]:shadow data-[active=true]:hover:shadow-2xl"
 											>
 												<Link href={`/dashboard/${item.url}`}>
@@ -115,9 +112,7 @@ export function AppSidebar() {
 					))}
 				</SidebarMenu>
 			</SidebarContent>
-			<SidebarFooter>
-				{isPending ? <NavUserSkeleton /> : <NavUser user={dataUser} />}
-			</SidebarFooter>
+			<SidebarFooter>{isPending ? <NavUserSkeleton /> : <NavUser user={dataUser} />}</SidebarFooter>
 		</Sidebar>
 	);
 }

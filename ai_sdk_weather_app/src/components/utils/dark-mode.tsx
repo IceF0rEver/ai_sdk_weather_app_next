@@ -25,10 +25,7 @@ export default function DarkMode({ className }: DarkModeProps) {
 		{ key: "system", icon: <MonitorCog className="h-4 w-4" /> },
 	];
 
-	if (!isMounted)
-		return (
-			<div className={cn(className, "bg-muted w-[86px] h-7.5 rounded-full")} />
-		);
+	if (!isMounted) return <div className={cn(className, "bg-muted w-[86px] h-7.5 rounded-full")} />;
 
 	return (
 		<div className={cn(className)}>
@@ -39,11 +36,7 @@ export default function DarkMode({ className }: DarkModeProps) {
 			>
 				{mods?.map((item) => (
 					<div key={item.key} className="flex items-center space-x-2">
-						<RadioGroupItem
-							value={item.key}
-							id={item.key}
-							className="sr-only"
-						/>
+						<RadioGroupItem value={item.key} id={item.key} className="sr-only" />
 						<Label
 							htmlFor={item.key}
 							className={`flex h-6 w-6 items-center justify-center rounded-full cursor-pointer ${

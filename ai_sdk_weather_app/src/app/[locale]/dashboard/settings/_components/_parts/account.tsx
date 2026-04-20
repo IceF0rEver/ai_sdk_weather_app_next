@@ -26,9 +26,7 @@ export default function Account() {
 
 	const updateUserSchema = authSchemas(t).updateUser;
 
-	const { form, onSubmit, isPending } = useGenericForm<
-		z.infer<typeof updateUserSchema>
-	>({
+	const { form, onSubmit, isPending } = useGenericForm<z.infer<typeof updateUserSchema>>({
 		schema: updateUserSchema,
 		defaultValues: defaultValues,
 		resetTrigger: session,
@@ -48,10 +46,8 @@ export default function Account() {
 					) {
 						await authClient.updateUser(
 							{
-								...((validatedData.firstName !==
-									session?.user.name.split(" ")[0] ||
-									validatedData.lastName !==
-										session?.user.name.split(" ")[1]) && {
+								...((validatedData.firstName !== session?.user.name.split(" ")[0] ||
+									validatedData.lastName !== session?.user.name.split(" ")[1]) && {
 									name: `${validatedData.firstName} ${validatedData.lastName}`,
 								}),
 								...(validatedData.image !== session?.user.image && {
@@ -61,15 +57,11 @@ export default function Account() {
 							{
 								onError: (ctx) => {
 									setErrorMessage({
-										betterError: t(
-											`BASE_ERROR_CODES.${ctx.error.code}` as keyof typeof string,
-										),
+										betterError: t(`BASE_ERROR_CODES.${ctx.error.code}` as keyof typeof string),
 									});
 								},
 								onSuccess: async () => {
-									toast.success(
-										t("components.settings.toast.nameOrImageSuccess"),
-									);
+									toast.success(t("components.settings.toast.nameOrImageSuccess"));
 								},
 							},
 						);
@@ -80,9 +72,7 @@ export default function Account() {
 							{
 								onError: (ctx) => {
 									setErrorMessage({
-										betterError: t(
-											`BASE_ERROR_CODES.${ctx.error.code}` as keyof typeof string,
-										),
+										betterError: t(`BASE_ERROR_CODES.${ctx.error.code}` as keyof typeof string),
 									});
 								},
 								onSuccess: async () => {
@@ -121,11 +111,7 @@ export default function Account() {
 				<SettingsArticlePassword />
 				<AuthForm form={form} onSubmit={onSubmit} className="grid gap-9">
 					{errorMessage.betterError && (
-						<p
-							className="text-sm text-destructive"
-							aria-live="polite"
-							aria-atomic="true"
-						>
+						<p className="text-sm text-destructive" aria-live="polite" aria-atomic="true">
 							{errorMessage.betterError}
 						</p>
 					)}

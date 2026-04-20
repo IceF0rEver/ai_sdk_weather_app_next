@@ -20,23 +20,13 @@ type RootLayoutProps = {
 	params: Promise<{ locale: string }>;
 	children: ReactNode;
 };
-export default async function RootLayout({
-	params,
-	children,
-}: RootLayoutProps) {
+export default async function RootLayout({ params, children }: RootLayoutProps) {
 	const { locale } = await params;
 
 	return (
 		<html lang={locale} suppressHydrationWarning>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
+			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 					<I18nProviderClient locale={locale}>
 						<ThemeColorProvider>
 							{children}

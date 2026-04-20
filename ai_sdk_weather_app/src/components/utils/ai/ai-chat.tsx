@@ -13,7 +13,7 @@ interface AiChatProps {
 
 export default function AiChat({ ...props }: AiChatProps) {
 	return (
-		<div className="max-w-4xl mx-auto p-6 relative size-full h-screen">
+		<div className="max-w-4xl p-4 mx-auto relative size-full h-screen">
 			<div className="flex flex-col h-full">
 				<PromptInputProvider>
 					<AiConversation {...props} />

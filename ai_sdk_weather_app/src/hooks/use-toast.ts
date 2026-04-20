@@ -17,11 +17,7 @@ interface UseToastOptions {
 	onError?: () => void;
 }
 
-export function useToast(
-	state: ToastState,
-	isPending: boolean,
-	options: UseToastOptions,
-) {
+export function useToast(state: ToastState, isPending: boolean, options: UseToastOptions) {
 	const toastRef = useRef<string | number | null>(null);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: options re-render
